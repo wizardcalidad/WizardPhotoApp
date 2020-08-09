@@ -1,0 +1,255 @@
+
+
+function msieversion() {
+    var e = !!document.documentMode;
+    1 == e && ($("#confirm_popup").css("width", "50%"), $("#confirm_popup").css("margin-left", "28%"))
+}
+
+function playVideo() {
+    function e(e) {
+        e || (e = window.event), t++, $(s).attr("src", "videos/eduonix" + t + ".mp4"), n.load(), n.play()
+    }
+    var t = 1,
+        n = document.getElementById("myvideo"),
+        s = document.getElementById("mp4Source");
+    n.addEventListener("ended", e, !1)
+}
+
+function setBg() {    
+    var e =  $("#myvideo").width();    
+     var t = $("#myvideo").height();
+    $("#topNav").height(), $("#divTransparantLayer").width(e), $("#divTransparantLayer").height(t)
+}
+
+function showMenuIconSrnSize() {
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) && ($("#mblMenuIcon").css("margin-top", "7px"), $(".breadCrumbs").css("margin-top", "1.4em"), $("#confirm_popup ").css("margin-top", "60px"))
+}
+
+function showMblMenuIconScreenResize() {
+    var e = $(window).width();
+    "1208" > e ? (document.getElementById("lnklogin").style.marginLeft = "15px", document.getElementById("lnklogin").style.cursor = "pointer", document.getElementById("mblMenuIcon").style.display = "block", document.getElementById("mblMenuIcon").style.marginTop = "-70px") : (document.getElementById("lnklogin").style.marginLeft = "172px", document.getElementById("lnklogin").style.cursor = "pointer", document.getElementById("mblMenuIcon").style.display = "none", document.getElementById("mblMenuIcon").style.marginTop = "-70px")
+}
+
+function setCatLinkActive(e) {
+    $(".leftSideCategories").each(function() {
+        var t = $(this).attr("id");
+        e == t ? $("#link_" + e).removeClass("leftSideCategories").addClass("leftSideCategoriesActive") : $("#link_" + t).removeClass("leftSideCategoriesActive").addClass("leftSideCategories")
+    })
+}
+
+function showContentDiv(e, t) {
+    $(".courseDescMain").each(function() {
+        var t = $(this).attr("id");
+        t == e ? $("#" + e).show() : $("#" + t).hide()
+    }), $(".listCourseContent, .listCourseContentActive").each(function() {
+        var e = $(this).attr("id");
+        if (t == e) {
+            $("#" + t).removeClass("listCourseContent").addClass("listCourseContentActive");
+            var n = $("#" + t).find("img").attr("src"),
+                s = n.lastIndexOf("/"),
+                i = n.substring(s + 1);
+            i = i.replace("2", "1");
+            var l = img_url + i;
+            $(this).find("img").attr("src", l)
+        } else {
+            $("#" + e).removeClass("listCourseContentActive").addClass("listCourseContent");
+            var n = $("#" + e).find("img").attr("src"),
+                s = n.lastIndexOf("/"),
+                i = n.substring(s + 1);
+            i = i.replace("1", "2");
+            var l = img_url + i;
+            $(this).find("img").attr("src", l)
+        }
+    });
+    var n = $("#divLeftMainDesc").offset().top;
+    $("html,body").animate({
+        scrollTop: Number(n) - Number(120)
+    }, "slow")
+}
+
+function showRedeemDiv() {
+   
+    $("#spnRedeem").addClass('dn');
+    $("#redeemDiv1").removeClass('dn');
+    //document.getElementById("redeemDiv1").style.opacity = "1", 
+    //document.getElementById("redeemDiv1").style.zIndex = "3"
+}
+
+function changeCoupon(){
+    $("#spnRedeem").addClass('dn');
+    $("#redeemDiv1").removeClass('dn');
+    $(".loader").hide();
+    $(".btnLoad").show();
+    $(".redeemDivApplyBtn").attr("disabled", false);
+    
+}
+
+function hideRedeemDiv1() {
+    $("#spnRedeem").removeClass('dn');
+    $("#redeemDiv1").addClass('dn');
+    //$("#redeemDiv1").find(".coup_msg").html(""), $("#coupon_name").val(""), document.getElementById("redeemDiv1").style.opacity = "0", document.getElementById("redeemDiv1").style.zIndex = "-1"
+}
+
+function showProfileDivs(e) {
+    $(".commonProfile").each(function() {
+        var t = $(this).attr("id");
+        t == e ? $("#" + e).show() : $("#" + t).hide()
+    })
+}
+
+function showNext(e) {
+    $(".dealsListTitles, .dealsListTitlesActive").each(function() {
+        if (eleId = $(this).attr("id"), eleId = eleId.split("_").pop(), e != eleId) {
+            var t = $("#dealContent_" + eleId).hasClass("db");
+            if (1 == t) {
+                var n = $("#dealContent_" + eleId).attr("id");
+                n = n.split("_").pop(), $("#dealtab_" + n).removeClass("dealsListTitlesActive").addClass("dealsListTitles"), $("#tabTriangle_" + n).removeClass("db").addClass("dn"), $("#dealContent_" + n).removeClass("db").addClass("dn"), n = Number(Number(n) + Number(1)), $("#dealtab_" + n).removeClass("dealsListTitles").addClass("dealsListTitlesActive"), $("#tabTriangle_" + n).removeClass("dn").addClass("db"), $("#dealContent_" + n).removeClass("dn").addClass("db"), exit
+            }
+        }
+    })
+}
+
+function showPrev(e) {
+    $(".dealsListTitles, .dealsListTitlesActive").each(function() {
+        if (eleId = $(this).attr("id"), eleId = eleId.split("_").pop(), e != eleId) {
+            var t = $("#dealContent_" + eleId).hasClass("db");
+            if (1 == t) {
+                var n = $("#dealContent_" + eleId).attr("id");
+                n = n.split("_").pop(), $("#dealtab_" + n).removeClass("dealsListTitlesActive").addClass("dealsListTitles"), $("#tabTriangle_" + n).removeClass("db").addClass("dn"), $("#dealContent_" + n).removeClass("db").addClass("dn"), n = Number(Number(n) - Number(1)), $("#dealtab_" + n).removeClass("dealsListTitles").addClass("dealsListTitlesActive"), $("#tabTriangle_" + n).removeClass("dn").addClass("db"), $("#dealContent_" + n).removeClass("dn").addClass("db"), exit
+            }
+        }
+    })
+}
+
+function getsearch1() {
+    window.location.href = "<?php echo site_url(); ?>search?name=" + $("#searchinput").val().toLowerCase()
+}
+
+function showDeals(e) {
+    if ("viewAll" != e) {
+        var t;
+        $(".dealsListTitles, .dealsListTitlesActive").each(function() {
+            t = $(this).attr("id"), t = t.split("_").pop(), t == e ? ($("#dealtab_" + e).removeClass("dealsListTitles").addClass("dealsListTitlesActive"), $("#dealContent_" + e).removeClass("dn").addClass("db"), $("#tabTriangle_" + e).removeClass("dn").addClass("db")) : ($("#dealtab_" + t).removeClass("dealsListTitlesActive").addClass("dealsListTitles"), $("#dealContent_" + t).removeClass("db").addClass("dn"), $("#tabTriangle_" + t).removeClass("db").addClass("dn"))
+        })
+    } else {
+        var t;
+        $(".dealsListTitles, .dealsListTitlesActive").each(function() {
+            t = $(this).attr("id"), t = t.split("_").pop(), $("#dealContent_" + t).removeClass("dn").addClass("db"), $("#dealtab_" + t).removeClass("dealsListTitlesActive").addClass("dealsListTitles"), $("#tabTriangle_" + t).removeClass("db").addClass("dn")
+        })
+    }
+}
+
+function showDesc(e) {
+    1 == $("#spanNav" + e).hasClass("fas fa-minus") ? ($("#divDesc" + e).hide(), $("#spanNav" + e).removeClass("fas fa-minus").addClass("fas fa-plus")) : ($("#divDesc" + e).show(), $("#spanNav" + e).removeClass("fas fa-plus").addClass("fas fa-minus"))
+}
+
+function getStates(e) {
+    "" != $("#searchinput").val() ? ($("#results").show(), $("#searchinput").val()) : $("#results").hide(), $("#results").html(data)
+}
+
+function showMblSearch() {
+    //$("#forMblSearchInput").show(), $("#navigationBar").removeClass("in")
+    // var x = document.getElementById("forMblSearchInput");
+    // if (x.style.display === "none") {
+    //     x.style.display = "block";
+    //     //$("#navigationBar").removeClass("in")
+    // } else {
+    //     x.style.display = "none";
+    // }
+    if ($(".divMobSearch").hasClass("dn")) {
+        $('.divMobSearch').removeClass('dn');
+        $("#navigationBar").removeClass("in")
+    }
+    else
+    {
+          $('.divMobSearch').addClass('dn');
+    }
+}
+
+function hideMblSearch() {
+    $("#forMblSearchInput").hide()
+}
+
+function setNotificationMblDiv() {
+    $("#btnOfferText").animate({
+        top: "0px"
+    }), $("#offerOfTheMonth").hide()
+}
+
+function hideNotificationMblDiv() {
+    $("#btnOfferText").animate({
+        top: "-132px"
+    }), $("#offerOfTheMonth").show()
+}
+
+function showNotification() {
+    var e = {
+        Android: function() {
+            return navigator.userAgent.match(/Android/i)
+        },
+        BlackBerry: function() {
+            return navigator.userAgent.match(/BlackBerry/i)
+        },
+        iOS: function() {
+            return navigator.userAgent.match(/iPhone|iPad|iPod/i)
+        },
+        Opera: function() {
+            return navigator.userAgent.match(/Opera Mini/i)
+        },
+        Windows: function() {
+            return navigator.userAgent.match(/IEMobile/i)
+        },
+        any: function() {
+            return e.Android() || e.BlackBerry() || e.iOS() || e.Opera() || e.Windows()
+        }
+    };
+    e.any() ? setNotificationMblDiv() : $("#btnOffer").animate({
+        right: "0px"
+    }, 1e3)
+}
+
+function hideNotification() {
+    $("#btnOffer").animate({
+        right: "-143px"
+    }, 1e3)
+}
+
+function showDealDetails() {
+    var e = $("#proDetailsBottom").offset().top;
+    $("html,body").animate({
+        scrollTop: Number(e) - Number(120)
+    }, "slow")
+}
+$(document).ready(function() {
+    msieversion(), /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) && ($("#loginPopUp").css("width", "87%"), $("#loginPopUp").css("marginLeft", "10%"), $("#signUpPopUp").css("width", "87%"), $("#signUpPopUp").css("marginLeft", "10%"), $("#lnklogin").css("margin-left", "15px"), $("#searchResultHeadText").css("font-size", "0.8em"), $(".downloadNowBtn").css("display", "none"), $(".dwnLoadMblarrow").css("display", "block"), $("#pnfForDeskTOp").hide(), $("#pnfForMbl").show(), $("#largeLogoutImg").css("margin-top", "104px"), $("#payConfirmPageForMbl").css("margin-top", "165px"), $("#noteImg").hide(), $("#offerOfTheMonth").css("left", "32%"), $("#btnOfferText").css("font-size", "1em"), $("#btnOfferText").css("padding", "33px"), $("#frmUploadImg").css("width", "auto"))
+    //, $("#backTop").backTop({
+    //     position: 500,
+    //     speed: 500,
+    //     color: "red"
+    // })
+}), $(document).ready(function() {
+   // var e = $(window).width();
+   // "1208" > e ? (document.getElementById("mblMenuIcon").style.display = "block", document.getElementById("mblMenuIcon").style.width = "10%", document.getElementById("mblMenuIcon").style.position = "absolute", document.getElementById("mblMenuIcon").style.right = "22px", document.getElementById("mblMenuIcon").style.zIndex = "9998", document.getElementById("navigationBar").style.position = "relative", document.getElementById("navigationBar").style.marginTop = "10%", document.getElementById("navigationBar").style.marginLeft = "-207px") : (document.getElementById("lnklogin").style.marginLeft = "172px", document.getElementById("lnklogin").style.cursor = "pointer", document.getElementById("mblMenuIcon").style.display = "none", document.getElementById("mblMenuIcon").style.width = "10%", document.getElementById("mblMenuIcon").style.position = "absolute", document.getElementById("mblMenuIcon").style.right = "22px", document.getElementById("mblMenuIcon").style.zIndex = "9998", document.getElementById("navigationBar").style.position = "relative", document.getElementById("navigationBar").style.marginTop = "0", document.getElementById("navigationBar").style.marginLeft = "0");
+  //  var e = $(window).width();
+   // "1042" > e ? (document.getElementById("mblMenuIcon").style.display = "block", document.getElementById("mblMenuIcon").style.width = "10%", document.getElementById("mblMenuIcon").style.position = "absolute", document.getElementById("mblMenuIcon").style.right = "22px", document.getElementById("mblMenuIcon").style.top = "-43px", document.getElementById("mblMenuIcon").style.zIndex = "9998", document.getElementById("navigationBar").style.position = "relative", document.getElementById("navigationBar").style.marginTop = "0", document.getElementById("navigationBar").style.marginLeft = "0") : (document.getElementById("lnklogin").style.marginLeft = "172px", document.getElementById("lnklogin").style.cursor = "pointer", document.getElementById("mblMenuIcon").style.display = "none", document.getElementById("mblMenuIcon").style.width = "10%", document.getElementById("mblMenuIcon").style.position = "absolute", document.getElementById("mblMenuIcon").style.right = "22px", document.getElementById("mblMenuIcon").style.top = "-43px", document.getElementById("mblMenuIcon").style.zIndex = "9998"), setBg();
+  //  var e = $(window).width();
+  //  e > "1600" && $("#btnOfferText").css("padding", "8px")
+}), $("#searchinput1").keyup(function() {
+    url = software_url, console.log(url);
+    var e = $(this).val();
+    $.ajax({
+        type: "POST",
+        url: url + "search/display/" + e,
+        success: function(e) {
+            console.log(e), $("#results").empty(), $("#results").append(e), $("#results").removeAttr("style"), $("#results").attr("style", "display:block;")
+        }
+    })
+});
+
+function setScrollAnimationClass(eleClass) {
+    var htPro = $("." + eleClass).offset().top;
+    $('html,body').animate({
+        scrollTop: Number(htPro) - Number(100)
+    }, 'slow');
+}
+

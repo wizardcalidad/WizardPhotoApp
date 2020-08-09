@@ -1,0 +1,217 @@
+body{ 
+    padding: 0;
+    margin: 0;
+}
+
+h1{
+    font-size: 70px;
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+}
+
+p{
+    font-size: 30px;
+    font-family: 'Courier New', Courier, monospace;
+    color: white;
+}
+
+section{
+    padding: 40px 0 40px 0;
+}
+
+.em-text{
+    color: blue !important;
+    font-size: 40px;
+    font-family: fantasy;
+    
+} 
+/* 
+.em-title{
+    color: blue !important;
+} */
+
+.jumbotron{
+background: url(../img/milkyway.jpg);
+background-size: cover;
+height: 500px;
+overflow: none;
+}
+
+.jumbotron .app-btn{
+    width: 40%;
+    margin-right: 20px;
+}
+
+.jumbotron .phone{
+    width: 232;
+    height: 391;
+    margin-left: 120px;
+    
+}
+
+h2{
+    font-size: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    color: blue;
+}
+
+p1{
+    font-size: 14px;
+    font-family: cursive;
+    color: blue;
+}
+
+.demo{
+    width: 100%;
+    padding: 3px;
+    border:1px solid #ccc;
+}
+
+section#feature{
+    background: #1caa98;
+    color: #fff;
+    padding: 40px;
+    overflow: auto;
+}
+
+section#feature ul li{
+    font-size: 22px;
+    list-style: none;
+    line-height:2.0em;
+}
+
+.big-logo{
+    width: 60%;
+}
+
+section#title-bar{
+    padding: 0;
+    margin: 0;
+    height: 75px;
+    background: blue;
+    color: #fff;
+}
+
+section#title-bar h1{
+    margin-bottom: 20px;
+    font-size: 50px;
+    font-family: fantasy;
+   
+}
+
+
+footer{
+    background: #333;
+    color: #fff;
+    padding:30px 0 20px 0;
+}
+
+footer li{
+    float: left;
+    padding: 0 10px 0 10px;
+    list-style: none;
+}
+footer a{
+    color: #fff;
+}
+
+footer p{
+    float: right;
+    font-size: 20px;
+}
+
+/* MEDIA QUERIES */
+
+@media(max-width:1200px){
+   
+}
+@media(max-width:991px){
+        .phone{
+            display: none;
+        }
+    
+}
+@media(min-width:768px) and (max-width:990px){
+    .jumbotron .app-btn{
+        width: 30%;
+    }
+    .jumbotron{
+        height: 400px !important;
+        background-size: 100% 100%;
+        text-align: center;
+    }
+
+    .jumbotron h1{
+        margin-top: 10px;
+    }
+    .jumbotron p{
+        font-size: 20px;
+    }
+    
+}
+@media(max-width:768px){
+    .jumbotron{
+        height: 400px !important;
+        background-size: 100% 100%;
+        text-align: center;
+    }
+    .jumbotron h1{
+        margin-top: 10px;
+    }
+    .jumbotron h1{
+        margin-top: 10px;
+    }
+    .jumbotron p{
+        font-size: 20px;
+    }
+    
+}
+@media(max-width:500px){
+    .jumbotron{
+        height: 400px !important;
+        text-align: center;
+    }
+    .jumbotron h1{
+        font-size: 50px;
+        margin-top: 10px;
+    }
+    .jumbotron p{
+        font-size: 20px;
+    }
+    .jumbotron .app-btn{
+        width: 40%;
+        margin: 0 auto 30px auto;
+        display:block;
+    }
+    section#title-bar h1{
+        padding: 10px;
+        font-size: 28px;
+        font-family: fantasy;
+       
+    }
+    section#feature ul li{
+        font-size: 19px !important;
+    }
+    footer p{
+        float:none;
+        text-align: center;
+        padding-top: 20px;
+    }
+    
+}
+@media(max-width: 291px){
+    .jumbotron{
+        height: 250px !important;
+        text-align: center;
+    }
+    .jumbotron h1{
+        font-size: 40px;
+        margin-top: 10px;
+    }
+    .jumbotron p{
+        font-size: 15px;
+    }
+    .jumbotron .app-btn{
+        width: 10%;
+    }
+}

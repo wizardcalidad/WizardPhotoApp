@@ -1,0 +1,881 @@
+@media only screen and (min-width: 1680px)
+{
+ /*.divBannerSlider{height:677px}*/
+ .img1680{display: block !important}
+.divFeatureCat .divThumbImg>img {
+    height: auto !important;
+    width: 100%;
+}
+
+}
+@media only screen and (min-width: 992px) and (max-width: 1200px)
+{
+.divScrollFix{
+    min-width: 0px !important;max-width: 290px !important;}
+
+.offer_90_10{
+        max-width: 114px;
+}
+.edegreePricing {
+    padding: 10px;
+    }
+}
+@media only screen and (min-width: 1025px) and (max-width: 1679px)
+{
+ /*.divBannerSlider{height:470px}*/
+ .img1680{display: block !important}
+}
+@media only screen and (min-width: 768px) and (max-width: 1024px)
+{
+ /*.divBannerSlider{height:360px}*/
+ .divPopSpecial{display:none;}
+ .img1025{display: block !important}
+ .headTtl{font-size:30px}.pathCrsHead{font-size: 20px;}
+ .edgreeList{height: 57px;}
+.EdgreeInfoList li{width: 78px;height: 58px;font-size: 1rem;}
+.divCurrHover{padding: 0px 50px;}
+.divCatLogLeft .card .card-body .custom-control-label {font-size: 0.8rem;}
+.divRateCat>span{display: none;}
+
+}
+
+@media only screen and (min-width: 767px) and (max-width: 992px){
+    #aplyCrtCode{display: block; width:100%; margin: 5px auto !important;}
+.bogoThumbStripDesk{
+    display: none;
+}
+.divMobSearch::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    right:140px;
+    margin-left: -5px;
+    border-width: 8px;
+    border-style: solid;
+    border-color: transparent transparent #ccc transparent;
+}
+
+}
+@media only screen and (min-width: 992px) and (max-width: 1024px)
+{
+    .divScrollFix{max-width: 290px !important;}
+    .productVideoWidth{width: 90% !important;}
+    .btnApply{font-size: 0.7em;}
+}
+@media only screen and (min-width: 768px) and (max-width: 1400px){
+    .form-search {
+    width: 330px !important;
+    }
+}
+@media only screen and (min-width: 480px) and (max-width: 767px)
+{
+ /*.divBannerSlider{height:350px}*/
+ .divHomeCarouselMob{display:flex}
+ .divTrainBtn{margin-bottom: 1rem}
+ .divPopSpecial{display:none;}
+ .divCurrHover{ top: 22px !important;}
+ .img768{display: block !important}
+ .popularNav,.popularNavMain {overflow-x: auto;overflow-y: hidden;display: -webkit-box;display: -moz-box;}
+ .popularNav .nav-item, .popularNavMain .nav-item { float: none;}
+ .nav-Vertical{float:none;overflow-x: auto;overflow-y: hidden;display: -webkit-box;display: -moz-box;}
+ .content_block{padding-left:1rem;padding-right:1rem}
+ .divFlexRow{display: block;text-align: center;}
+ .divFlexRow .content_block{padding:0px;}
+ .nav-Vertical .nav-item .nav-link{box-shadow: 0px 0px 2px 2px #e8e6e6;margin-left: 10px;margin-top: 15px;width: auto;height: 80px;padding: 12px 17px;}
+.nav-Vertical .nav-item:last-child .nav-link{padding: 12px 17px; margin-right: 2px;}
+.verTabContent{width:100%; padding-left: 0px;}
+.nav-Vertical .nav-item .item-left{left: 25px;}
+.divFlexRow .tab-content>.active{display:inline-block;}
+.verTabContent .container{padding: 0px;}
+.nav-Vertical .nav-item:first-child .nav-link{margin-left:2px;}
+.nav-Vertical .nav-item:first-child .item-left{left: 17px;}
+.nav-Vertical::-webkit-scrollbar,.popularNav::-webkit-scrollbar {width: 0px;background: transparent; }
+.nav-Vertical::-webkit-scrollbar-thumb,.popularNav::-webkit-scrollbar-thumb {width: 0px;background: transparent;}
+#instructorSection{margin-top: 40px;}
+.oneLiner .divInfo{margin-right:5px;}
+.fotterData{width:150px;}
+.fotterData.logo{width: 100vw;text-align: center;margin-bottom: 20px;}
+.fotterData.logo img{display: inline !important;}
+.nav-Vertical {float: none; overflow-x: auto;overflow-y: hidden;display: -webkit-box;}
+
+}
+@media only screen and (min-width: 320px) and (max-width: 479px)
+
+{
+.divLgnTxt .tableCommon .lgnTxt{font-size: 16px;}
+#recaptcha1,#recaptcha2 {overflow: hidden; border-right: 1px solid #ccc;width: 200px;margin: auto;border-radius: 4px;}
+/*.divBannerSlider{height: 300px}*/
+.divTrainBtn{margin-bottom: 1rem}
+.content_block{padding-left:1rem;padding-right:1rem}
+.divPopSpecial{display:none;}
+.img320{display: block !important; height: 175px;}
+.popularNav, .popularNavMain, .navFeaturedSlide {overflow-x: auto;overflow-y: hidden;display: flex;display: -moz-box;}
+.popularNav .nav-item,.popularNavMain .nav-item{ float: none;}
+.nav-Vertical{float:none;overflow-x: auto;overflow-y: hidden;display: -webkit-box;display: -moz-box;}
+.divFlexRow{display: block;text-align: center;}
+.divFlexRow .content_block{padding:0px;}
+.nav-Vertical .nav-item .nav-link{box-shadow: 0px 0px 2px 2px #e8e6e6;margin-left: 10px;margin-top: 15px;width: auto;height: 80px;padding: 12px 17px;}
+.nav-Vertical .nav-item:last-child .nav-link{padding: 12px 17px; margin-right: 2px;}
+.verTabContent{width:100%; padding-left: 0px;}
+.nav-Vertical .nav-item .item-left{left: 25px;}
+.divFlexRow .tab-content>.active{display:inline-block;}
+.verTabContent .container{padding: 0px;}
+.nav-Vertical .nav-item:first-child .nav-link{margin-left:2px;}
+.nav-Vertical .nav-item:first-child .item-left{left: 17px;}
+.nav-Vertical::-webkit-scrollbar,.popularNav::-webkit-scrollbar {width: 0px;background: transparent; }
+.nav-Vertical::-webkit-scrollbar-thumb,.popularNav::-webkit-scrollbar-thumb {width: 0px;background: transparent;}
+.width-50{-ms-flex: 0 0 50%;flex: 0 0 50%; max-width: 50%;}
+.divPricing{font-size: 1rem;}
+.productTopHeading{font-size: 1.5rem;}
+.oneLiner .divInfo{display: block;}
+.divBannerTxt{
+    /*width:300px;*/ /*commented for flash sale*/
+    width:100% !important; /*delete this line after flash sale*/
+}
+.headPath {font-size: 1.5rem;}
+.edgreeBtn .btn-Pro{margin-top: 1rem !important;}
+.cartDrop {width: 90vw;}
+.cartHeadBtn{display: block; margin-bottom: 10px; width: 100%;}
+.tbl_cart tr td:nth-child(1){display: none;}
+.fotterData{width: auto;padding-right: 20px;}
+.fotterData.logo{width: 100vw; text-align: center;  margin: 0 0 10px 0;}
+.fotterData:nth-last-child(2){padding-right:0px;}
+.footerHead{font-size:0.8rem;}
+.footerList{font-size: 0.7rem;}
+.social a .footerLogo{margin-bottom:5px !important;}
+.course-block--track{padding: 0px 15px;}
+.track__counter{font-size:12px;}
+.plr0{padding-right: 0px; padding-left: 0px;}
+.divGift .btn-outLine{margin-bottom: 0.5rem;}
+.edgreeMainOuter{padding:0px; border:none;box-shadow: none;}
+.divCourseCnt{font-size: 1rem;}
+.divCourseCnt .CourseCntInner{margin-right: 1rem}
+.divEdgreeListHover .divBtnHovr .spnInfo{padding: 0.5rem;}
+.spnOfrPrc{margin-top: -5px;font-size: 1.5rem;}
+.divEdgreeListHover{padding-bottom: 5px;padding-top: 15px;}
+.spnCount{font-size: 16px;}
+.divCurrHover{padding: 0px 10px; top:100px;}
+.curriSlider .col-lg-12{padding-left:5px; padding-right: 5px;}
+.divCurrHover .LftArrow, .divCurrHover .RgtArrow{width: 30px;height: 30px;font-size: 1.2rem;}
+.divInsInfo h5{font-size: 1rem}
+.divInsInfo p{font-size: 0.9rem}
+.heading{font-size: 1.5rem}
+/*.edgreeSlick .slick-slide {width: 300px !important;}*/
+.lgnModal .modal-body{width:95%;}
+.previewVideo{height: 220px;}
+/*======================Edegree Product Page ============================*/
+.img-profile-tab{
+    max-width: 200px;
+    }
+.rateWrap{
+    display: block;
+}
+}
+
+@media(min-width: 992px){
+    .headPath{
+        width: 100%;overflow: hidden;white-space: nowrap; text-overflow: ellipsis;line-height: 1.3;
+    }
+    .productVideoWidth{
+        width:70%;
+    }
+    .wshCrtHidDesk{display: none;}
+
+    .bogoThumbStripMob{
+        display: none;
+    }
+
+}
+@media(max-width: 991px){
+    .divMobView{display: block}
+    .navbar-brand .mob_menu{display: block}
+}
+@media(max-width: 992px){
+.card{padding: 5px !important;}
+.social{flex-direction: row;flex-basis: 100%;text-align: center;border-top: 1px solid #ccc; padding-top: 10px; margin-top: 10px;}
+.social a .footerLogo{margin:auto !important; margin-bottom: 10px !important;}
+.social .footerHead{margin-bottom:5px;}
+.centerTxt{text-align: center}.imgAt{margin: auto;width:150px;}.pathCrsHead{font-size:18px;}.mrl86{margin-left:0px;}.pdl0{padding-right: 0px;}.secBg{background-image: none;background-color: #343433}
+.divPopSpecial{display:none;}
+.edgreeCnt{padding-left: 0px;}
+.headPath{font-size: 1.5rem; margin-top: 10px;}
+.edgreeList{max-height:100%; height: 100%;}
+.EdgreeInfoList{margin-top: 1rem;}
+.EdgreeInfoList li{width: 78px; height: 58px; font-size: 1rem;}
+.nav-edgreeTab {overflow-x: auto;overflow-y: hidden;/*display: -webkit-box; display: -moz-box;*/}
+.curriculumCard h4{font-size: 1.2rem;}
+.curriculumCard p, .curriculumCard ul li{font-size: 0.9rem;}
+.curriculumCard ul li{margin-bottom: 5px;}
+.divCurrHover h1,.secHead{font-size: 1.9rem}
+.wshCrtHidDesk{display: block;}
+.divSelectCat h5{
+    top: 20px;
+    position: relative;
+    margin-bottom: 35px;
+}
+.floating-label{top: 3px !important;}
+.btnApply{padding: 2px 1px !important; margin: 0 !important;}
+
+#div_pricing .card{
+    padding: 15px !important;
+}
+.proceed{    padding: 15px !important;}
+
+.divFeatureCat .catHead{font-size: 1.2rem;line-height: 1.5;font-weight: bold;}
+.mainCatName{
+    font-size: 1.2rem;
+    color: #000;
+    display: block;
+}
+.divCurriMain{margin-bottom: 130px;}
+.divFlexCenter {
+    background-color: #f7f7f7;
+    background-image: none !important;
+}
+.edgreeBg{
+    background-size: auto 100%;
+    background-position: center;
+}
+.edegreePricing {
+    position: static;
+    }
+.featuresSectionRow{
+    max-width: 100%;
+}
+.CatFilter{display: inline; transition: all 2s; cursor: pointer;font-size: 1.2rem;color: #a2a1a1;}
+
+
+/*===============Course Page Changes ============================*/
+/*course page*/
+
+/*World CUP Prediction*/
+#worldCupCart {
+    padding: 10px !important;
+    }
+.nav-edgreeTab .nav-item {
+    padding: 0 10px;
+}
+.bogoThumbStripMob{
+    position: absolute;
+    left: 50%;
+    bottom: 10px;
+    background: red;
+    color: white;
+    padding: 0 5px;
+    font-weight: bold;
+    transform: translate(-50%);
+    border-radius: 4px;
+    width: 180px;
+}
+#filtersSection{
+    font-size: 9px;
+}
+.bogoThumbStripDesk{display: none;}
+}
+@media(max-width:769px){
+/*===================Course Page Changes==================================*/
+.divCatLogLeft{left: 0;position: fixed;top: 20px;height: 100vh; width: 270px;z-index: 199;background-color: #fff; box-shadow: 0px 0px 17px #f5f2f2; margin-top: -20px;display:none;
+}
+.divCatLogLeft .card .card-body .custom-control-label {font-size: 0.8rem;}
+.CatFilter{display: inline; transition: all 2s; cursor: pointer;font-size: 1.2rem;color: #a2a1a1;}
+/*.divCatThumb ul.catLogthumb li,.divCatThumb ul.catLogthumb li .divThumb{width:100%;}*/
+.divCatThumb ul.catLogthumb li .divThumb .thmbCard {display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;margin-bottom:0px;width: 100%;}
+.divCatThumb ul.catLogthumb li .divThumb .thmbCard .divThumbImg{
+    -ms-flex: 0 0 25%;   
+        flex: 0 0 25%;
+        max-width: 25%;
+}
+.divCatThumb ul.catLogthumb li .divThumb .thmbCard .divThumbInfo {-ms-flex: 0 0 75%;
+    flex: 0 0 75%;
+    max-width: 75%;
+}
+.divCatThumb ul.catLogthumb li{
+    overflow: visible ;
+}
+.divCatThumb ul.catLogthumb li>.item.ldcnt{
+    width:100%;
+}
+.divCatThumb ul.catLogthumb li>.item.ldcnt>.divThumb{
+    width:100%;
+    margin-left: 0px;
+}
+.divCatThumb ul.catLogthumb li>.item.ldcnt>.divThumb .divdespthumb{
+    height: inherit;
+}
+.divCatThumb ul.catLogthumb li>.item.ldcnt>.divThumb p{
+    margin: 0;
+    padding: 0;
+    margin-bottom: 5px;
+}
+.divCatThumb ul.catLogthumb li>.item.ldcnt>.divThumb .divthumbtm{
+    margin-top: 0;
+}
+.divCatThumb ul.catLogthumb li .divThumb .thmbCard img{ height: 100%;border-radius: 5px 0px 0px 5px;}
+.divCatThumb{padding-right: 15px; flex: 0 0 100%;max-width: 100%; padding-bottom: .9rem;}
+.divCatThumb ul.catLogthumb{
+    display: block;
+}
+.divCatThumb ul.catLogthumb li>.item.ldcnt>.divThumb .divThumbInfo>.divRating{
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+}
+/*course Page Changes ENd*/
+.divFeatureCarousel .carousel-control-prev{left:0px;}
+.divFeatureCarousel .carousel-control-next{right: 0px;}
+.divFeatureCat{margin-left: 1.5rem !important;
+margin-right: 1.5rem !important;}
+
+/*course page*/
+.divCatLogLeft{left: 0;position: fixed;top: 20px;height: 100vh; width: 270px;z-index: 199;background-color: #fff; box-shadow: 0px 0px 17px #f5f2f2; margin-top: -20px;display:none;
+}
+.divCatLogLeft .card .card-body .custom-control-label {font-size: 0.8rem;}
+.CatFilter{display: inline; transition: all 2s; cursor: pointer;font-size: 1.2rem;color: #a2a1a1;margin-left: 7px;}
+/*.divCatThumb ul.catLogthumb li,.divCatThumb ul.catLogthumb li .divThumb{width:100%;}*/
+.divCatThumb ul.catLogthumb li .divThumb .thmbCard {display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;margin-bottom:0px;width: 100%;}
+.divCatThumb ul.catLogthumb li .divThumb .thmbCard .divThumbImg{
+    -ms-flex: 0 0 25%;   
+        flex: 0 0 25%;
+        max-width: 25%;
+}
+.divCatThumb ul.catLogthumb li .divThumb .thmbCard .divThumbInfo {-ms-flex: 0 0 75%;
+    flex: 0 0 75%;
+    max-width: 75%;
+}
+.divCatThumb ul.catLogthumb li{
+    overflow: visible ;
+}
+.divCatThumb ul.catLogthumb li>.item.ldcnt{
+    width:100%;
+}
+.divCatThumb ul.catLogthumb li>.item.ldcnt>.divThumb{
+    width:100%;
+    margin-left: 0px;
+}
+.divCatThumb ul.catLogthumb li>.item.ldcnt>.divThumb .divdespthumb{
+    height: inherit;
+}
+.divCatThumb ul.catLogthumb li>.item.ldcnt>.divThumb p{
+    margin: 0;
+    padding: 0;
+    margin-bottom: 5px;
+}
+.divCatThumb ul.catLogthumb li>.item.ldcnt>.divThumb .divthumbtm{
+    margin-top: 0;
+}
+.divCatThumb ul.catLogthumb li .divThumb .thmbCard img{ height: 100%;border-radius: 5px 0px 0px 5px;}
+.divCatThumb .divThumbInfo .divThumbHeadSecondary{height: auto;line-clamp: 1;
+    -webkit-line-clamp: 1;
+    -moz-line-clamp: 1;
+    -ms-line-clamp: 1;
+    -o-line-clamp: 1;
+    line-height: 1.3em !important;}
+.divCatThumb{padding-right: 15px; flex: 0 0 100%;max-width: 100%; padding-bottom: .9rem;}
+.divCatThumb ul.catLogthumb{
+    display: block;
+}
+ .divCourseCaraousel{
+    padding: 0 4rem;
+ }
+/* #kaptureChatWrapper, #kaptureChatWrapper .kapchat-btn{
+    display: none;
+} */
+.divEdgreeMain .offer_div_thumb {
+    left: 0 !important;
+    transform: translate(0,0) !important;
+}
+/*=======Bogo Offer===*/
+#filtersSection .bogoThumbStripMob{
+    width: 100%;
+    border-radius: 0px;
+    text-align: center;
+    bottom: 0;
+    right: 0;
+}
+#filtersSection .thumbTxtBogo{
+    display: none;
+}
+#filtersSection .filterSectionBogo{
+    display: inline;
+}
+}
+@media(max-width: 600px){#divCatLogLeft .hideMobCat{height: 18px;}#divCatLogLeft .divThumhHead{font-size: 0.85rem}
+.mobViewLogo{display: inline;}
+.deskViewLogo{display: none;}
+
+.divCatThumb .divThumbInfo .divThumbHeadSecondary{line-clamp: 2;
+    -webkit-line-clamp: 2;
+    -moz-line-clamp: 2;
+    -ms-line-clamp: 2;
+    -o-line-clamp: 2;
+    line-height: 1.5em !important;
+font-size: 1rem;}
+   #divCatLogLeft .divThumhHead{margin-bottom: 0px;}
+   #divCatLogLeft{display: inline;}
+   .divCatThumb .spnThumbhnTxt,.divCatThumb .spnThumbTxt,.divCatThumb .spnThumblTxt,.divCatThumb .spnThumbhrTxt,.divCatThumb .spnThumbFtured{font-size: 0.5rem;padding: 3px 5px;left: 20px;}
+.pagination li{font-size: 0.8rem;width: 25px;height: 25px;}
+
+/*========Video Btn==============*/
+    .video-box-btn{
+        width: 140px !important;
+        border-radius:4px;
+    }
+    .notifyMeStripImg{
+        width: 90px !important;
+    }
+
+}
+
+@media(max-width: 350px){
+.divCurrHover{top:60px !important;}
+    .courseCorouselLeft{top: 25% !important;
+    left: 0px !important;}
+.courseCorouselRight{top: 25% !important;
+    right: 0px !important;}
+
+}
+
+
+
+@media(max-width: 530px){
+#div_sort{float: left;width: 100%;margin: 15px 0px 14px 0px !important;}
+.topRightTag{font-size:0.7rem}
+}
+
+@media(max-width: 992px){
+    .divCurriMain{margin-bottom: 130px;}
+}
+
+@media only screen and (min-width: 1818px){
+ .divCatLogLeft{flex: 0 0 12%; max-width: 12%;}
+ .divCatThumb{flex: 0 0 88%;max-width: 88%;text-align: right}
+ .divCatThumb ul li {text-align: left;}
+}
+
+
+@media(max-width: 1024px){
+
+.divPopSlider{margin:15px 0px 28px 0px;}
+
+.curriculumDescription{height:100px; overflow-y: auto !important; position: relative; top: 5px;}
+
+}
+@media(max-width: 320px){
+    .productPrice{
+        font-size: 14px;
+    }
+
+}
+@media only screen and (min-width: 320px) and (max-width: 375px){
+    .offer_90_10{
+        max-width: 114px;
+}
+
+}
+@media(min-width: 480px){
+
+.stickyNavBarMob,.stickyPriceBar{
+    display: none;
+}
+.searchResultProjectName .spnThumbFtured{
+    display: inline-block;
+}
+}
+@media (max-width: 480px){
+/* #kaptureChatWrapper, #kaptureChatWrapper .kapchat-btn{
+    display: none;
+} */
+
+.divCourseCaraousel{padding: 0 1rem;}
+
+.courseCorouselLeft{top: 25% !important;
+    left: 0px !important;}
+.courseCorouselRight{top: 25% !important;
+    right: 0px !important;}
+#divCatLogLeft .hideMobCat{
+    display: none;
+}
+.divCatThumb ul.catLogthumb li>.item.ldcnt>.divThumb .divThumbInfo>.divRating{
+    display: none;
+}
+.divCatThumb ul.catLogthumb li>.item.ldcnt>.divThumb .divThumbInfo{
+    padding: 5px 0.9rem;
+}
+.divCatThumb>.catLogthumb .spnThumblTxt{
+    left: 291% !important;
+    width: 100%;
+    text-align: center;
+    font-size: 0.7rem;
+    padding: 2px 0px;
+}
+.divCatThumb>.catLogthumb .spnThumbhnTxt{
+    left: 291% !important;
+    width: 100%;
+    text-align: center;
+    font-size: 0.7rem;
+    padding: 2px 0px;
+}
+.divCatThumb>.catLogthumb .spnThumbFtured{
+    left: 291% !important;
+    width: 100%;
+    text-align: center;
+    font-size: 0.7rem;
+    padding: 2px 0px;
+}
+.divCatThumb>.catLogthumb .spnThumbTxt{
+    left: 291% !important;
+    width: 100%;
+    text-align: center;
+    font-size: 0.7rem;
+    padding: 2px 0px;
+}
+.divCatThumb>.catLogthumb .spnThumbhrTxt{
+    left: 291% !important;
+    width: 100%;
+    text-align: center;
+    font-size: 0.7rem;
+    padding: 2px 0px;
+}
+/*sticky nav product page*/
+.stickyNavBarMob{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #f1f1f1;
+    z-index: 999;
+    padding: 15px;
+}
+
+.stickyPriceBar{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background: #fff;
+    z-index: 999;
+    width: 100%;
+    padding: 10px;
+    box-shadow: 0 4px 16px rgba(20,23,28,0.25);
+    /*padding-left: 15px;*/
+}
+.stickyPriceBar button{
+    padding: 0.5rem;
+    width: 100%;;
+    margin: 0px;
+}
+    
+.stickyPriceBar input.btn{
+    padding: 0.5rem;
+    width: 50vw !important;
+    margin: 0px;
+}
+
+.currentPrice{
+    font-size: 2rem;
+    font-weight: bold;
+    color: #000;
+}
+.marketPrice{
+    font-size: 1.4rem;
+}
+.stickyPriceBar>div.float-left{
+    width:50%;
+    margin: 3px 0 0 0;
+}
+.stickyPriceBar>.outer_div{
+    width: 50%;
+} 
+.stickyPriceBar .currentPrice{
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #000;
+
+}
+.stickyPriceBar .marketPrice{
+    font-size: 0.9rem;
+}
+.cookieBtn{
+    margin-top: 10px;
+}
+.divCatLogLeft{
+    width:100vw !important;
+    padding: 20px !important;
+    overflow-y: scroll;
+}
+.stickyNavBarMob>.navMobList{
+    text-align: center;
+}
+.stickyNavBarMob>.navMobList .nav-link{
+    padding: 0rem 0.5rem;
+    margin-right: 0rem;
+    display: inline-block;
+}
+.stickyNavBarMob>.navMobList .nav-link.active{
+    background: #a7a7a7;
+    color: white;
+}
+
+/*Syllabus css*/
+.MainSyllabus .card-header button{
+    padding: 5px 0;
+    position: relative;
+}
+.MainSyllabus [data-toggle="collapse"].collapsed .fa:before{
+    content: "\f067";
+    position: absolute;
+    left: 7px;
+    top: 50%;
+    transform: translate(0, -50%);
+    color: #fcb752;
+}
+.MainSyllabus [data-toggle="collapse"] .fa:before{
+    content: "\f068";
+    position: absolute;
+    left: 7px;
+    top: 50%;
+    transform: translate(0, -50%);
+    color: #fff;
+
+}
+.previewInside,.previewButton {
+    width: auto !important;
+    font-size: 0.8rem !important;
+    padding: 1px 5px !important;
+    border-radius: 4px;
+}
+.nav-edgreeTab .nav-link {
+    padding: 0 1rem !important;
+}
+.MainSyllabus .card-header .secInfo{
+    margin-left: 25px;
+}
+.searchResult{
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+}
+
+
+/*.spnThumbFtured{
+        background-color: #f98638;
+    position: relative;
+    left: -0.1rem !important;
+    top: 0px !important;
+    display: inline-block !important;
+}
+*/
+.searchSort {
+    float: none !important;
+    width: 100% !important;
+    display: block !important;
+}
+.serach_pgn{
+    width:100vw;
+}
+.searchResultMiddle {
+    padding: 0px !important;
+}
+.searchcatLogthumb{
+    padding: 0px !important;
+}
+.searchcatLogthumb .Description{
+    display: none;
+}
+.searchResultSection{
+    padding: 0px !important;
+    margin-bottom: 20px !important;
+}
+.searchResultProjectName{
+    font-size: 13px !important;
+}
+.lectureIcon{
+        margin-left: 5px !important;
+}
+.insFullName{
+    display: block;
+    margin-left: 0px !important;
+}
+.searchResultProjectDate, .searchResultProjectName, .searchResultProjectName a{
+    margin-bottom: 0px !important;
+}
+.searchResultProjectDate{
+    font-size: 12px !important;
+}
+.searchcatLogthumb .price{
+    margin-left: 0px;
+    float: left;
+}
+.searchResultMiddle .btn-Pro{
+    padding:0.5rem 1rem !important;
+    font-size:  0.9rem;
+}
+.searchResultMiddle .collectionCartWish{
+    display: block;
+    margin: 0px;
+    padding: 0px;
+    text-align: left;
+    float: right;   
+}
+.divBgSpecialsImg, .divBgEdegreeImg, .divBgPathImg, .divBgEdegreeImg{
+    opacity: 0.2;
+}
+.divBannerTxt[data-screen="desktop"]{display: none !important;}
+.divBannerTxt[data-screen="mobile"]{display: block !important;}
+.kaptureWidth{
+    width: 0px !important;
+}
+/*================Edegreee Page================*/
+.edgreeFAQ [data-toggle="collapse"].collapsed .fa:before{
+        content: "\f067";
+    position: absolute;
+    /* right: 27px; */
+    top: 50%;
+    transform: translate(0,-50%);
+    right: 15px;
+    color: #000;
+}
+.edgreeFAQ [data-toggle="collapse"] .fa:before{
+        content: "\f068";
+    position: absolute;
+    top: 50%;
+    transform: translate(0,-50%);
+    right: 15px;
+    color: #fff;
+}
+.MainSyllabus .edegreeSylBtn.collapsed .fa:before {
+    content: "\f067";
+    position: absolute;
+    top: 50% !important;
+    left: 5px !important;
+    transform: translate(0,-50%) !important;
+    color: #fcb752;
+}
+.MainSyllabus .edegreeSylBtn .fa:before {
+    content: "\f068";
+    position: absolute;
+    top: 50% !important;
+    left: 5px !important;
+    transform: translate(0,-50%) !important;
+    color: #fff;
+}
+.edegreeSection{
+    height: 35px;
+        border: 1px solid #ccc;
+    margin-top: 1rem;
+    padding: 0 1rem;
+    padding-bottom: 0px;
+    border-radius: 6px;
+    overflow: hidden;
+}
+.edegreePrSubSection .ptb-21{
+    padding-top: 0!important;
+}
+.edegreeHeight{
+    height: auto;
+}
+.edegreePricing{
+    padding: 10px !important;
+}
+.edegreePrSubSection .heading {
+    text-align: left !important;
+    margin-left: -1rem;
+    margin-right: 0rem;
+    padding: 0.5em 1rem;
+    display: block;
+    cursor: pointer;
+    width: 100%;
+    box-sizing: content-box;
+    position: relative;
+    font-size: 1.1rem;
+}
+.edegreePrSubSection .heading .fa:before {
+    content: "\f067";
+    position: absolute;
+    top: 50% !important;
+    right: 10px !important;
+    transform: translate(0,-50%) !important;
+    color: #000;
+}
+.edegreePrSubSection .heading.activeHeading .fa:before {
+    content: "\f068";
+    position: absolute;
+    top: 50% !important;
+    right: 10px !important;
+    transform: translate(0,-50%) !important;
+    color: #fff;
+}
+ul.liProLrn li{
+    font-size: 0.9rem;
+}
+.mob-text-left{
+ text-align:left;
+}
+.scrollerTop{
+    display: none;
+}
+.aboutMeEdegree{
+    padding: 75px 10px 20px;
+}
+/*=============Video Box Start===============*/
+    .video-box{
+        width:300px;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+    }
+/*    .stripNotifyMe{
+    position: absolute;
+    right: 0;
+    top: 0px;
+    }*/
+     .stripNotifyMe>h2{
+      font-size: 13px !important;
+    text-align: left !important;
+    }
+    .video-box-btn{
+        width: 140px !important;
+        top: 30%;
+        right: 10px;
+        left: auto;
+        transform: translate(0%,0%);
+        border-radius:4px;
+    }
+}
+
+@media (max-width: 630px){
+    .kaptureCustomStyle{
+        bottom:12px !important;
+    }
+    .surveyNav>li{
+        flex-basis: 100% !important;
+    }
+    section#filtersSection .flashSaletimerWrap{
+    font-size: 10px;
+    }
+    section#filtersSection .flashSaletimerWrap>.timerTxtProduct{
+    display: none;
+    }
+}
+
+@media(max-width:767px){
+.categoryBannerTxt{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+.bannerTxt{
+    width:100% !important;
+}
+.flashSaleCategoryImg>img{
+    width: 120px;
+}
+.edegreeOneLiner {
+    padding: 0 !important;
+}
+}

@@ -1,0 +1,3260 @@
+
+function showRedeamCoupon() {
+
+    $("#redeamCoupon").animate({
+        opacity: "1"
+    }, 300), $("#redeamCoupon").css("z-index", "1")
+}
+
+function hideRedeamCoupon() {
+    $("#redeamCoupon").animate({
+        opacity: "0"
+    }, 300), $("#redeamCoupon").css("z-index", "-1")
+}
+
+function set_addtowish_para(addtowish_pid, module) {
+    addtowish_pid > 0 ? ($("#addtowsh_pid").val(addtowish_pid), $("#addtowsh_module").val(module)) : '';
+}
+
+function showPopUp(a, b, c) {
+    $(".tippy-popper").css({"visibility" : "hidden" });
+    $("#login_type").val(a);
+    $('.modal').modal('hide');
+    $("#" + b).modal('show');
+
+    $.ajax({
+        method: "POST",
+        url: software_url + "login/login_status"
+    }).done(function (d) {
+        if (1 == d) {
+            alert("You have been signed out of the account, This may happened because you must have signin with another acount in same browser. Please signin to continue with this account"), location.reload();
+            window.location.href = software_url;
+        }
+    })
+
+}
+
+function showSignUpPopUp(a, b, c) {
+//    $("#login_type").val(a);
+    $('.modal').modal('hide');
+    $("#" + c).modal('show');
+}
+
+var del_obj = "";
+
+function set_del_ack(response) {
+    if (response == 'yes') {
+        var content_type = $('#content_type').val();
+        switch (content_type) {
+            case "curricullum":
+                var module = $(del_obj).attr('itemid');
+                if (module == 'section') {
+                    deleteSection(del_obj);
+                } else if (module == 'lecture') {
+                    deleteLecture(del_obj);
+                } else if (module == 'project') {
+                    deleteProject(del_obj);
+                } else if (module == 'quiz') {
+                    deleteQuiz(del_obj);
+                } else if (module == 'question') {
+                    deleteQuestion(del_obj);
+                }
+                del_obj = "";
+                break;
+            case "prerequisites":
+                delete_prerequisite(del_obj);
+                del_obj = "";
+                break;
+            case "coupons":
+                delete_coupon(del_obj);
+                del_obj = "";
+                break;
+            case "mul_coupons":
+                mul_delete_coupon();
+                break;
+            case "refund":
+                var curr_obj = del_obj.obj;
+                $(curr_obj).find('.spnLoaderTrns').removeClass('dn');
+                $(curr_obj).find('label').addClass('dn');
+                refund_request(response);
+                break;
+            case "addtowishlist":
+                var curr_obj = del_obj.obj;
+                wishprourl(response);
+                del_obj = "";
+                break;
+            case "inst_regi_confirm":
+                inst_regi_confirm(response);
+                break;
+            case "delete_usr_profile":
+                delete_usr_profile(response);
+                break;
+            case "user_prof_summ":
+                delete_prof_summ(del_obj);
+                del_obj = "";
+            case "user_edu_summ":
+                delete_edu_summ(del_obj);
+                del_obj = "";
+                break;
+            case "gen_certificate":
+                gen_certificate(del_obj, '');
+                del_obj = "";
+                break;
+            case "gen_edcertificate":
+                gen_edcertificate(del_obj);
+                del_obj = "";
+                break;
+            case "gen_pcertificate":
+                gen_pcertificate(del_obj);
+                del_obj = "";
+                break;
+            case "voting":
+                skip_voting(del_obj);
+                del_obj = "";
+                break;
+            default:
+                break;
+        }
+    }
+    $('#content_type').val('');
+    $('.cus-modal').addClass('dn');
+}
+
+function loading(btn, msg_span) {
+    $(btn).find('img').removeClass('dn');
+    $(btn).addClass("capply");
+    $(btn).attr("disabled", "disabled")
+
+    $(msg_span).text("");
+}
+
+function loading_stop(btn, msg_span) {
+    $(msg_span).fadeIn(500);
+    setTimeout(function () {
+        $(msg_span).fadeOut("slow", function () {
+        });
+    }, 3000);
+    //$(msg_span).fadeOut("fast");
+    $(btn).removeClass("capply");
+    $(btn).removeAttr('disabled');
+    $(btn).find('img').addClass('dn');
+}
+
+function checkCookie_gdpr() {
+    $('div#coockieGDPR').fadeOut();
+    $.ajax({
+        method: "POST",
+        url: "<?php echo base_url(); ?>home/checkCookie_gdpr",
+        //            data: ,
+        success: function (data) {
+            //                        alert('set');
+        },
+        error: function (data) {
+            console.log("error");
+        }
+    });
+
+}
+
+function chk_name_gen_certificate(id, name, via) {
+    if (via == 'course') {
+        $('#content_type').val('gen_certificate');
+    } else if (via == 'edegree') {
+        $('#content_type').val('gen_edcertificate');
+    } else if (via == 'paths') {
+        $('#content_type').val('gen_pcertificate');
+    }
+
+    var popup_txt = "Congratulations! You have successfully finished the course! <br><br> Your Certificate will be generated with the name “<b>" + name + "</b>”, if it’s correct then proceed by clicking Yes and if you wish to change the name, then you can update your profile by clicking on the below link. <br> <a href='" + software_url + "dashboard/profile' style='color: #007bff;' target='_blank'>Update Profile</a>";
+
+    del_obj = id;
+    $('#popup_txt').html(popup_txt);
+    $('#cus-myModal').removeClass('dn');
+}
+
+function gen_certificate(id, cert) {
+    if (id == 'get_link') {
+        window.location.href = software_url + 'certificate/' + cert;
+    } else {
+        $.ajax({
+            method: "POST",
+            url: software_url + "dashboard/generate_certificate",
+            data: {id: id}
+        })
+                .done(function (msg) {
+                    if (msg.trim() != '0') {
+                        window.location.href = software_url + 'certificate/' + msg.trim();
+                    }
+                });
+    }
+
+}
+
+function gen_edcertificate(id) {
+    $.ajax({
+        method: "POST",
+        url: software_url + "dashboard/get_ed_cert",
+        data: {id: id}
+    })
+            .done(function (msg) {
+                if (msg.trim() != '0') {
+                    window.open(msg.trim(), '_blank');
+                }
+            });
+}
+
+function gen_pcertificate(id) {
+    $.ajax({
+        method: "POST",
+        url: software_url + "dashboard/get_paths_cert",
+        data: {id: id}
+    })
+            .done(function (msg) {
+                if (msg.trim() != '0') {
+                    window.open(msg.trim(), '_blank');
+                }
+            });
+}
+
+function checkAutoBlanks(obj) {
+    if ($(obj).val() != '')
+    {
+        $(obj).parent().next().text('');
+        return true;
+    } else
+    {
+        var id = $(obj).parent().next().attr('id');
+        if(id == 'errInput'){
+           $('#'+ id).text('Please Enter Email ID');
+        }else if (id == 'errpw') {
+           $('#'+ id).text('Please Enter Password');
+        }else if(id == 'si_err_N'){
+           $('#'+ id).text('Please Enter Name');
+        }else if (id == 'si_err_E') {
+           $('#'+ id).text('Please Enter Email ID');
+        }else if (id == 'si_err_P') {
+           $('#'+ id).text('Please Enter Password');
+        }
+        return false;
+    }
+}
+
+function confirm_deprecate() {
+
+    $("#img_ajax").css("display", "block"), $("#overlay").css("display", "block"), $.ajax({
+        method: "POST",
+        url: software_url + "Payments/confirmation",
+        data: {
+            confirm_type: "ajax"
+        }
+    }).done(function (a) {
+        var b = $(a).find(".payComfDiv");
+        $("#confirm_popup").html(b), $("#img_ajax").css("display", "none"), $("#overlay").css("display", "none"), showPopUp("", "confirm_popup", "")
+    })
+}
+
+function apply_coup(a, b, module) {
+    //alert('coupon in');
+
+    $(".coup_msg").html("");
+    $(".coup_msg").removeAttr("style");
+
+    if ($("#conf_coupon").val() == '' || $("#coupon_name").val() == '')
+    {
+        $(".coup_msg").html("Please enter coupon code");
+        $(".coup_msg").fadeIn('fast').delay(5000).hide(0);
+        return;
+    }
+
+    //$(".cp_proBtnApply").addClass("capply");
+    $(".hideApply").css("display", "none");
+    loading($(".cp_proBtnApply"), '');
+    loading($(".redeemDivApplyBtn"), '');
+    $(".btnLoad").css("display", "none");
+    $(".redeemDivApplyBtn").find(".c_loader").css("display", "block");
+    $(".redeemDivApplyBtn").attr("disabled", true);
+    var lmnum = "";
+    var id_cnt = "";
+    if (module == 'bww') {
+        lmnum = limitNum;
+        id_cnt = qwer;
+    }
+    var c = "";
+    var rp = "";
+    "ajax" == b && (c = $("#coupon_name").val()), "confirm_page" == b && (c = $("#conf_coupon").val()), "url" == b && (c = a), "" != c && $.ajax({
+        method: "POST",
+        url: software_url + "product/update",
+        data: {
+            coupon_name: c,
+            method: b,
+            product_id: $('#poiu').val(),
+            module: module,
+            lmnum: lmnum,
+            id_cnt: id_cnt
+        }
+    }).done(function (a) {
+//        console.log(a);
+//        exit();
+        $(".hideApply").css("display", "block");
+        loading_stop($(".cp_proBtnApply"), '');
+        loading_stop($(".redeemDivApplyBtn"), '');
+        var c = $.parseJSON(a),
+                d = c.qty,
+                e = "",
+                f = "";
+        //console.log(JSON.stringify(c));
+        if (2 == d ? e = "Invalid Coupon" : 3 == d ? e = "Coupon expired" : 4 == d && (e = "Not Applicable"), "" == e) {
+        var shw_err_msg = module == 'bww' ? 'deal' : module;
+//        if (2 == d ? e = "This "+shw_err_msg+" is already at its lowest price" : 3 == d ? e = "This "+shw_err_msg+" is already at its lowest price" : 4 == d && (e = "This "+shw_err_msg+" is already at its lowest price"), "" == e) {
+            $('#cvbn').val(c.coupon_name);
+            $('#dicountPrice').val(c.price);
+            $('#couponName').val(c.coupon_name);
+            $('#module').val(module);
+
+            switch ($(".con_err_msg").text(""), f = c.price, b) {
+                case "confirm_page":
+                    $("#paypalbtn").removeAttr("style");
+                    $("#paypalbtn").show();  // for showing paypal button      
+                    // 0 == f ? ($("#div_free").html(c.freebtn_html), $("#div_pay").addClass("dn")) : ($("#div_free").html(""), $("#div_pay").removeClass("dn")), $(".coupn_div").html(c.html_coup_label), $(".final_amt").text("$" + c.price);
+                    0 == f ?
+                            ($("#div_free").html(c.freebtn_html), $("#Procd_to_pay").addClass("dn"),
+                                    $(".slidePayHeader").addClass("dn"),
+                                    $(".slidePayment").addClass("dn"),
+                                    $("#div_pay").addClass("dn"))
+                            :
+                            ($("#div_free").html(""),
+                                    $("#Procd_to_pay").removeClass("dn"),
+                                    $("#div_pay").removeClass("dn")),
+                            $(".coupn_div").html(c.html_coup_label),
+                            $(".final_amt").html("<b style=''>" + c.unit + c.price + "</b>"),
+                            $(".real_amt").html("<b style=''>" + c.unit + c.price + "</b>"),
+                            $(".coupn_vdisp").html("<li class='list-style-none'><span><b> Coupon </b></span><span class='pull-right'><b style='color:#86c246;'>" + c.html_coup_disp + "</b></span></li>"),
+                            $(".show_sub_total").html("<b >" + c.unit + (c.price - c.tax_amt) + "</b>"),
+                            $("#tax").html("<b> <span class='margin_right_3'>+ </span>" + c.unit + c.tax_amt + "</b>"),
+                            $('input[itemref="'+c.coupon_name+'"]').prop('checked', true);
+                    break;
+                case "ajax":
+                case "url":
+                    if (typeof c.savings !== 'undefined') {
+                        $('.dealsRightSideSavePrice').html(c.unit + c.savings);
+                    }
+                    //  $(".real").html(g), 0 == f ? ($(".redeamTextDiv1").addClass("dn"), $(".outer_div").html(c.freebtn_html)) : $(".redeamCouponText").removeClass("dn"), $(".price_value").text("$" + c.price)
+                    var g = c.unit + parseFloat(c.real_amt).toFixed(2);
+                    var price = c.unit + parseFloat(c.price).toFixed(2);
+                    onCouponApply(c);
+                    $("#PriceDiv #pnumber").html(g),
+                            0 == f ?
+                            ($(".redeamCouponText").removeClass("dn"),
+                                    $(".price_value").html(price),
+                                    $("#spnRedeem").addClass('dn'),
+                                    $("#redeemDiv1").addClass('dn'),
+                                    $(".divAppliedCpn").removeClass('dn').html("<label class='cpnAply'> Coupon <b style='color:#000;'> " + c.coupon_name + "\ </b>applied <a onclick='changeCoupon();' class='dn'><i class='fas fa-edit' style='margin-left:10px; font-weight:bold;color: #337ab7;'></i></a>&nbsp;&nbsp;<span id=\"coupn_lbl\" class=\"btn-cpnApply\" style=\"background-color: transparent;\"><a onclick='remove_coup(\""+c.price+"\", \"pro_page\", \""+module+"\")' class=\"rmvCpnText crsPointer\"><i class=\"far fa-trash-alt\" style=\"color: #337ab7;\"></i></a><span><img class=\"loader c_loader dn\" style=\"margin-left: 0px;\" src=\""+software_url+"assets/images/rolling.svg\" /></span></span></label>"),
+                                    $(".outer_div").html(c.freebtn_html),
+                                    $("#giftCourseButton").addClass('dn'))
+                            :
+                            $(".redeamCouponText").removeClass("dn"),
+                            $(".price_value").html(price),
+                            $("#spnRedeem").addClass('dn'),
+                            $("#redeemDiv1").addClass('dn'),
+                            $(".divAppliedCpn").removeClass('dn').html("<label class='cpnAply'> Coupon <b style='color:#000;'> " + c.coupon_name + "\ </b>applied <a onclick='changeCoupon();' class='dn'><i class='fas fa-edit' style='margin-left:10px; font-weight:bold;color: #337ab7;'></i></a>&nbsp;&nbsp;<span id=\"coupn_lbl\" class=\"btn-cpnApply\" style=\"background-color: transparent;\"><a onclick='remove_coup(\""+c.price+"\", \"pro_page\", \""+module+"\")' class=\"rmvCpnText crsPointer\"><i class=\"far fa-trash-alt\" style=\"color: #337ab7;\"></i></a><span><img class=\"loader c_loader dn\" style=\"margin-left: 0px;\" src=\""+software_url+"assets/images/rolling.svg\" /></span></span></label>")
+                    
+            }
+        } else
+            switch (b) {
+                case "confirm_page":
+                    $(".coup_msg").text(e);
+                    $(".coup_msg").fadeIn('fast').delay(5000).hide(0);
+                    $(".btnLoad").css("display", "block");
+                    $(".redeemDivApplyBtn").find(".c_loader").css("display", "none");
+                    $(".redeemDivApplyBtn").attr("disabled", false);
+                    break;
+                case "ajax":
+                    $(".coup_msg").text(e);
+                    $(".coup_msg").fadeIn('fast').delay(5000).hide(0);
+                    $(".btnLoad").css("display", "block");
+                    $(".redeemDivApplyBtn").find(".c_loader").css("display", "none");
+                    $(".redeemDivApplyBtn").attr("disabled", false);
+                    break;
+                case "url":
+                    //3 == d ? alert("The coupon code entered is expired ") : alert("The coupon code entered is " + e)
+            }
+        setTopMargin();
+    });
+
+}
+
+function onCouponApply(c) {
+    $('#PriceDiv #pnumber').removeClass('price_value');
+    priceWhenCoupon();
+    savingpc = Math.floor((1 - (c.price / c.market_amt)) * 100);
+    savingprice = c.unit + parseFloat(c.market_amt - c.price).toFixed(2);
+    $('#SavingPcDiv').html('(' + savingpc + '%)');
+    $('#SavedPrice').html(savingprice);
+}
+
+function priceWhenCoupon() {
+    $('#PriceDiv .RedHighlight').removeClass('RedHighlight');
+    $('#PriceDiv #pnumber').addClass('stk_real');
+    $('#OfferPriceDiv').css('display', 'flex');
+    $('#OfferPriceDiv #opnumber').addClass('price_value');
+}
+
+// Future functions for coupon removal
+// function priceWhenNoCoupon(){
+//     //console.log('priceWhenNoCoupon');
+//     $('#OfferPriceDiv').css('display','none');
+//     $('#PriceDiv').addClass('RedHighlight');
+//     $('#PriceDiv #pnumber').addClass('price_value');
+// }
+
+// function priceWhenCouponRemoved(){
+//     //console.log('priceWhenCouponRemoved');
+//     $('#PriceDiv #pnumber').removeClass('stk_real');
+//     $('#OfferPriceDiv').removeClass('RedHighlight').css('display','none');
+//     $('#OfferPriceDiv #opnumber').removeClass('price_value');
+//     priceWhenNoCoupon();
+// }
+
+function remove_coup(a, b, module) {
+    // $(".rmvCpnText").addClass("capply");
+    // $(".c_loader").removeAttr("style");
+
+    $("a.rmvCpnText").css("display", "none");
+    // $(".rmvCpnText").attr("disabled","disabled");
+    loading($("#coupn_lbl"), '');
+
+    $("#paypalbtn").removeAttr("style");
+    $("#paypalbtn").show();
+    $.ajax({
+        method: "POST",
+        url: software_url + "product/remove_coup",
+        data: {
+            amount: a,
+            method: b,
+            product_id: $('#poiu').val(),
+            module: module
+        }
+    }).done(function (a) {
+
+        //$(".rmvCpnText").removeClass("capply");
+        //$(".c_loader").css("display", "none");
+        loading_stop($("#coupn_lbl"), '');
+        $("a.rmvCpnText").removeAttr("style");
+        $('input[name="cpnradio"]').prop('checked', false);
+        // $(".rmvCpnText").removeAttr("disabled");
+        
+        var c = $.parseJSON(a);
+        $('#cvbn').val('');
+        switch (b) {
+            case "confirm_page":
+                if (c.real_amt > 0) {
+                    $('#module').val(module);
+                }
+                c.real_amt > 0 && ($("#div_free").html(""), $(".slidePayHeader").removeClass("dn"), $("#div_pay").removeClass("dn")), $(".coupn_div").html(c.html_coup_input), $(".final_amt").html("<b style=''>" + c.unit + c.final_amt + "</b>"), $('#tax').html("<b><span class='margin_right_3'> + </span>" + c.unit + c.tax_amt + "</b>"), $('.show_sub_total').html("<b> " + c.unit + (c.final_amt - c.tax_amt) + "</b>"), $("#Procd_to_pay").removeClass("dn"), $(".coupn_vdisp").html('');
+                //$(".cp_proPrice").text(c.unit + c.tax_amt);   // add real amount for Diwali page
+                $("#mainamount").html("<b>" + c.unit + c.real_amt + "</b>");
+                $(".real_amt").html("<b>" + c.unit + c.real_amt + "</b>");
+//                $('#module').val('courses');
+                break;
+            case "pro_page":
+                var pri_v = c.unit + parseFloat(c.price).toFixed(2);
+                onCouponApply(c),$('#spnRedeem').removeClass('dn'),$('.divAppliedCpn').addClass('dn'),$('#OfferPriceDiv').css('display', 'none'),$("#pnumber").addClass('price_value').removeClass('stk_real'),$('#coupon_name').val(''),$(".btnLoad").css("display", "block"),$(".c_loader").css("display", "none"),$(".redeemDivApplyBtn").removeAttr("disabled"),$('.price_value').html(pri_v), $("#pnumber").parent().addClass('redTxt')/*,('#YouSaveDiv #SavedPrice')*/;
+                break;
+            case "ajax":
+        }
+    })
+}
+
+function apply_coup_popup(a, b, module) {
+    //alert('coupon in');
+    var cpnradio = $('input[name=cpnradio]:checked').attr('itemref');
+    var c_id = cpnradio/*.split('_')[1]*/;
+//    alert(cpnradio+'=='+c_id);
+    loading($(".cpnPopBtn"), '');
+    
+    var lmnum = "";
+    var id_cnt = "";
+    if (module == 'bww') {
+        lmnum = limitNum;
+        id_cnt = qwer;
+    }
+
+    $.ajax({
+        method: "POST",
+        url: software_url + "product/update",
+        data: {
+            coupon_name: c_id,
+            method: b,
+            product_id: $('#poiu').val(),
+            module: module,
+            lmnum: lmnum,
+            id_cnt: id_cnt
+        }
+    }).done(function (a) {
+//        console.log(a);
+//        exit();
+        loading_stop($(".cpnPopBtn"), '');
+        $('#cpnModal').modal('hide');
+        
+        var c = $.parseJSON(a),
+                d = c.qty,
+                e = "",
+                f = "";
+        
+        if (2 == d ? e = "Invalid Coupon" : 3 == d ? e = "Coupon expired" : 4 == d && (e = "Not Applicable"), "" == e) {
+        var shw_err_msg = module == 'bww' ? 'deal' : module;
+//        if (2 == d ? e = "This "+shw_err_msg+" is already at its lowest price" : 3 == d ? e = "This "+shw_err_msg+" is already at its lowest price" : 4 == d && (e = "This "+shw_err_msg+" is already at its lowest price"), "" == e) {
+            $('#cvbn').val(c.coupon_name);
+            $('#dicountPrice').val(c.price);
+            $('#couponName').val(c.coupon_name);
+            $('#module').val(module);
+
+            $(".con_err_msg").text(""), f = c.price,
+                    $("#paypalbtn").removeAttr("style");
+                    $("#paypalbtn").show();  // for showing paypal button   
+                          $("#div_free").html(""),
+                                    $("#Procd_to_pay").removeClass("dn"),
+                                    $("#div_pay").removeClass("dn"),
+                            $(".coupn_div").html(c.html_coup_label),
+                            $(".final_amt").html("<b style=''>" + c.unit + c.price + "</b>"),
+                            $(".real_amt").html("<b style=''>" + c.unit + c.price + "</b>"),
+                            $(".coupn_vdisp").html("<li class='list-style-none'><span><b> Coupon </b></span><span class='pull-right'><b style='color:#86c246;'>" + c.html_coup_disp + "</b></span></li>"),
+                            $(".show_sub_total").html("<b >" + c.unit + (c.price - c.tax_amt) + "</b>"),
+                            $("#tax").html("<b> <span class='margin_right_3'>+ </span>" + c.unit + c.tax_amt + "</b>");
+        } else {
+            $(".coup_msg").text(e);
+            $(".coup_msg").fadeIn('fast').delay(5000).hide(0);
+            $(".btnLoad").css("display", "block");
+            $(".redeemDivApplyBtn").find(".c_loader").css("display", "none");
+            $(".redeemDivApplyBtn").attr("disabled", false);
+        }
+            
+        setTopMargin();
+    });
+}
+
+function hideLoginPopUp() {
+    $("#loginPopUp").animate({
+        top: "0px",
+        opacity: "0"
+    }, 600, function () {
+        $("#loginPopUp").hide()
+    })
+}
+
+function showLoginPopupOnResize() {
+    var a = $(window).width(),
+            b = ($(document).width(), $(document).height(), $("#loginPopUp").width()),
+            c = Number(a - b) / 2;
+    c = Number(c) - Number(70), document.getElementById("loginPopUp").style.left = c + "px"
+}
+
+function showSignInPopupOnResize() {
+    var a = $(window).width(),
+            b = $("#signUpPopUp").width(),
+            c = Number(a - b) / 2;
+    document.getElementById("signUpPopUp").style.left = c + "px"
+}
+
+function reset(a) {
+}
+
+function hidePopUp(a) {
+    $("#transparantLayer").hide(), $("#" + a).fadeOut(300), "payComfDiv" == a && $("." + a).fadeOut(300)
+}
+
+function hideSignUpPopUp() {
+    $("#signUpPopUp").fadeOut(300)
+}
+
+function showFgtPwdDiv(a, b, c) {
+    $("#" + a).modal('hide')
+}
+
+function expand(a, b) {
+    var c = $(a).attr("value");
+    "collapsed" == c ? ($("#" + b + " .item").addClass("active"), $(a).attr("value", "expanded"), $(a).text("collapse"), $("#" + b + " .leftCourse").hide(), $("#" + b + " .rightCourse").hide()) : "expanded" == c && ($("#" + b + " .item").removeClass("active"), $("#" + b + " .item:first").addClass("active"), $(a).attr("value", "collapsed"), $(a).text("View all"), $("#" + b + " .leftCourse").show(), $("#" + b + " .rightCourse").show())
+}
+
+function wishprourl(response) {
+    if (response == 'yes') {
+        var a = $("#addtowsh_pid").val();
+        var module = $("#addtowsh_module").val();
+        $.ajax({
+            method: "POST",
+            url: software_url + "Mycourses/wishprourl",
+            data: {pid: a, module: module},
+            success: function (data) {
+                var result = $.parseJSON(data);
+                window.location.href = result.url;
+            },
+            error: function (requestObject, error, errorThrown) {
+                alert(error);
+                alert(JSON.stringify(requestObject));
+                alert(errorThrown);
+            }
+        });
+    }
+
+}
+
+function addtowishlist(obj, a, page, module) {
+    if(page === 'myWishlist')
+    {
+        $('#loaderLayerfile').removeClass('dn');
+    }
+    $.ajax({
+        method: "POST",
+        url: software_url + "Mycourses/addtowishlist",
+        data: {pid: a, module: module, page: page},
+        success: function (data) {
+            var result = $.parseJSON(data);
+            if (result.status == 'added') {
+                if(page === 'c_list'){
+                    (module == 'courses') ? ($('.wishcartthmbcomm_' + a).find('.wishlistIcon i').attr('class','fa fa-heart isWishlist')) : ($(obj).attr('class','fa fa-heart isWishlist'));
+                }else if(page === 'cpop_list'){
+                    $('.right .popwish_'+ a).find('.wishlistIcon i').attr('class','fa fa-heart isWishlist');
+                    $(obj).attr('class','fa fa-heart isWishlist');
+                }else if(page === 'myWishlist'){
+                    $('.dashboardLeftNavActive').click();
+                }else{
+                    $(obj).closest('.wishlistD').find('.fa-heart').removeClass('far').addClass('fa');
+                }
+            } else if (result.status == 'removed') {
+                if(page === 'c_list'){
+                    (module == 'courses') ? ($('.wishcartthmbcomm_' + a).find('.wishlistIcon i').attr('class','far fa-heart')) : ($(obj).attr('class','far fa-heart'));
+                }else if(page === 'cpop_list'){
+                    $('.right .popwish_'+ a).find('.wishlistIcon i').attr('class','far fa-heart');
+                    $(obj).attr('class','far fa-heart');
+                }else if(page === 'myWishlist'){
+                    $('.rightDivBorderLeft.dash').html(result.html);
+                    $('#loaderLayerfile').addClass('dn');
+                }else{
+                    $(obj).closest('.wishlistD').find('.fa-heart').removeClass('fa').addClass('far');
+                }
+            } else if (result.status == 'exists') {
+                $("#addtowsh_pid").val(a);
+                $("#addtowsh_module").val(module);
+                $('#content_type').val('addtowishlist');
+                var popup_txt = "This " + module.replace(/s$/, "") + " is already in your dashboard. Do you want to go to the course ?";
+                del_obj = obj;
+                $('#popup_txt').text(popup_txt);
+                $('#cus-myModal').removeClass('dn');
+            }
+        },
+        error: function (requestObject, error, errorThrown) {
+            alert(error);
+            alert(JSON.stringify(requestObject));
+            alert(errorThrown);
+        }
+    });
+//    });.done(function (a) {
+//        alert(a)
+//    })
+}
+
+function open_div(a) {
+    $("#" + a).show()
+}
+
+function model_yes_btn(a) {
+    var b = $("#mod_del").val(),
+            c = $("#mod_repl_id").val(),
+            d = $("#mod_disc_id").val();
+    if ("reply" == b) {
+        var e = {
+            reply_id: c,
+            disc_id: d
+        };
+        $.ajax({
+            method: "POST",
+            url: software_url + "dashboard/delete_reply",
+            data: e
+        }).done(function (a) {
+            $(".reply_" + c).remove(), $(".link_" + d).html(a)
+        })
+    } else if ("discussion" == b) {
+        var e = {
+            disc_id: d,
+            product_id: a
+        };
+        $.ajax({
+            method: "POST",
+            url: software_url + "dashboard/delete_discussion",
+            data: e
+        }).done(function (a) {
+            $(".disc_body_" + d).parents(".dissc_inner_div").remove()
+        })
+    }
+}
+
+function load_more(a) {
+    var b = {
+        product_id: a,
+        last_id: $("#last_id").val()
+    };
+    $.ajax({
+        method: "POST",
+        url: software_url + "dashboard/load_more",
+        data: b
+    }).done(function (a) {
+        var b = $.parseJSON(a);
+        $("#diss_div").append(b.str), $("#last_id").val(b.last_id), $("#remaining_rows").val(b.remaining_rows), 0 == b.remaining_rows && ($("#load_btn").css("display", "none"), $("#last_id").val(0)), tinymce.init({
+            selector: ".replyDiv",
+            plugins: ["advlist autolink link lists charmap print preview hr anchor pagebreak spellchecker", "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking", "save table contextmenu directionality emoticons template paste textcolor"],
+            menubar: !1,
+            toolbar: "link | undo redo |  bold italic | fontsizeselect | alignleft aligncenter alignright alignjustify | preview",
+            schema: "html5"
+        })
+    })
+}
+
+function add_disscussion(a) {
+    var b = 0,
+            c = $("#discussionTitleDiv").val().trim(),
+            d = $("#dd_syl").val(),
+            e = $("#myModal1 .modal-body .mce-label").text().split(":")[1].replace("Words", "");
+    0 != e ? $("#err_desc").text("") : ($("#err_desc").text("Please enter the description"), b = 1), "" == c ? ($("#err_title").text("Please enter the title"), b = 1) : $("#err_title").text(""), 1 == b && exit();
+    var f = tinymce.get("discussionDescDiv").getContent(),
+            g = {
+                descp: f,
+                title: c,
+                lecture: d,
+                product_id: a
+            };
+    $.ajax({
+        method: "POST",
+        url: software_url + "dashboard/add_disscussion",
+        data: g
+    }).done(function (a) {
+        $("#diss_div").prepend(a), $("#myModal1").modal("hide"), $(".no-records").addClass("dn"), tinymce.get("discussionDescDiv").setContent(""), $("#discussionTitleDiv").val(""), tinymce.init({
+            selector: ".replyDiv",
+            plugins: ["advlist autolink link lists charmap print preview hr anchor pagebreak spellchecker", "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking", "save table contextmenu directionality emoticons template paste textcolor"],
+            menubar: !1,
+            toolbar: "link | undo redo |  bold italic | fontsizeselect | alignleft aligncenter alignright alignjustify | preview",
+            schema: "html5"
+        })
+    })
+}
+
+function add_reply(a) {
+    var b = tinymce.get("rep_" + a).getContent(),
+            c = $("#" + a + " .reply_txt .mce-label").text().split(":")[1].replace("Words", "");
+    0 != c ? $("#" + a + " .err_msg").text("") : ($("#" + a + " .err_msg").text("Please enter the description"), exit()), b = b.split(" ");
+    var d = {
+        descp: b,
+        disc_id: a,
+        product_id: $("#product_id").val()
+    };
+    $.ajax({
+        method: "POST",
+        url: software_url + "dashboard/add_reply",
+        data: d
+    }).done(function (b) {
+        var c = $.parseJSON(b);
+        $("#" + a + " .replies").append(c.rep_desp), $(".link_" + a).html(c.rep_link), tinymce.get("rep_" + a).setContent("")
+    })
+}
+
+function showRtbTxtEditor(a, b, c) {
+    var d = $(a).attr("value");
+    0 == d ? ("first" == c ? ($("#" + b).show(), $(a).children(".link").text("hide")) : $.ajax({
+        method: "POST",
+        url: software_url + "dashboard/get_replies",
+        data: {
+            disc_id: b
+        }
+    }).done(function (c) {
+        $("#" + b + "  .replies").html(c), $("#" + b).show(), $(a).children(".link").text("hide")
+    }), $(a).attr("value", "1")) : ($("#" + b).hide(), $(a).attr("value", "0"), "first" == c ? $(a).children(".link").text("Be the first and add your reply") : $(a).children(".link").text("show"))
+}
+
+function delete_discussion(a, b) {
+    $("#mod_del").val("discussion"), $("#mod_repl_id").val(""), $("#mod_disc_id").val(a), $("#myModal2").modal("show")
+}
+
+function delete_reply(a, b) {
+    $("#mod_del").val("reply"), $("#mod_repl_id").val(b), $("#mod_disc_id").val(a), $("#myModal2").modal("show")
+}
+
+function edit_discussion(a) {
+    var b = {
+        disc_id: a
+    };
+    $.ajax({
+        method: "POST",
+        url: software_url + "dashboard/edit_discussion",
+        data: b
+    }).done(function (b) {
+        $(".edit_div_" + a).html(b), $(".edit_div_" + a).removeClass("dn").addClass("db"), $(".disc_body_" + a).css("display", "none"), tinymce.init({
+            selector: ".edit_des",
+            plugins: ["advlist autolink link lists charmap print preview hr anchor pagebreak spellchecker", "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking", "save table contextmenu directionality emoticons template paste textcolor"],
+            menubar: !1,
+            toolbar: "link | undo redo |  bold italic | fontsizeselect | alignleft aligncenter alignright alignjustify | preview",
+            schema: "html5"
+        })
+    })
+}
+
+function edit_reply(a, b) {
+    var c = {
+        disc_id: a,
+        reply_id: b
+    };
+    $.ajax({
+        method: "POST",
+        url: software_url + "dashboard/edit_reply",
+        data: c
+    }).done(function (a) {
+        $(".reply_edit_div_" + b).html(a), $(".reply_edit_div_" + b).removeClass("dn").addClass("db"), $(".reply_desc_body_" + b).css("display", "none"), tinymce.init({
+            selector: ".edit_rep_des",
+            plugins: ["advlist autolink link lists charmap print preview hr anchor pagebreak spellchecker", "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking", "save table contextmenu directionality emoticons template paste textcolor"],
+            menubar: !1,
+            toolbar: "link | undo redo |  bold italic | fontsizeselect | alignleft aligncenter alignright alignjustify | preview",
+            schema: "html5"
+        })
+    })
+}
+
+function update_discussion(a) {
+    var b = 0,
+            c = $("#edit_title_" + a).val().trim(),
+            d = $(".edit_div_" + a + " .mce-label").text().split(":")[1].replace("Words", "");
+    0 != d ? $(".err_desc_" + a).text("") : ($(".err_desc_" + a).text("Please enter the description"), b = 1), "" == c ? ($(".err_title_" + a).text("Please enter the title"), b = 1) : $(".err_title_" + a).text(""), 1 == b && exit();
+    var e = tinymce.get("edit_disc_" + a).getContent(),
+            f = {
+                disc_id: a,
+                descp: e,
+                title: c
+            };
+    $.ajax({
+        method: "POST",
+        url: software_url + "dashboard/update_discussion",
+        data: f
+    }).done(function (b) {
+        0 != b ? ($(".disc_body_" + a).html(b), $(".disc_body_" + a).css("display", "block"), $(".edit_div_" + a).html(""), $(".edit_div_" + a).removeClass("db").addClass("dn")) : alert("Error while updating please try again...")
+    })
+}
+
+function update_reply(a, b) {
+    var c = $(".reply_edit_div_" + b + " .mce-label").text().split(":")[1].replace("Words", "");
+    0 != c ? $(".reply_err_desc_" + b).text("") : ($(".reply_err_desc_" + b).text("Please enter the description"), exit());
+    var d = tinymce.get("edit_rep_disc_" + b).getContent();
+    d = d.split(" "), o = {
+        descp: d,
+        reply_id: b,
+        disc_id: a
+    }, $.ajax({
+        method: "POST",
+        url: software_url + "dashboard/update_reply",
+        data: o
+    }).done(function (a) {
+        0 != a ? ($(".reply_desc_body_" + b).html(a), $(".reply_desc_body_" + b).css("display", "block"), $(".reply_edit_div_" + b).html(""), $(".reply_edit_div_" + b).removeClass("db").addClass("dn")) : alert("Error while updating please try again...")
+    })
+}
+
+function cancel_discussion(a) {
+    $(".disc_body_" + a).css("display", "block"), $(".edit_div_" + a).html(""), $(".edit_div_" + a).removeClass("db").addClass("dn")
+}
+
+function cancel_reply(a) {
+    $(".reply_desc_body_" + a).css("display", "block"), $(".reply_edit_div_" + a).html(""), $(".reply_edit_div_" + a).removeClass("db").addClass("dn")
+}
+
+function checkout() {
+    var c = $('#cvbn').val();
+    var p = $('#poiu').val();
+    var module = $('#module').val();
+    var gift = check_gift_array();
+
+    var encode_str = btoa(p + "@" + module);
+    var cpn_str = "";
+    if (c != '') {
+        cpn_str = "?coupon_code=" + c;
+    }
+    window.location.href = software_url + "checkout/" + encode_str + cpn_str;
+}
+
+function checkout_bww(sel) {
+    var ids;
+    if (sel == 'bwwpage') {
+        ids = qwer;
+    } else if (sel == 'ppage') {
+        ids = $('#ids').val();
+    }
+    var p = $('#poiu').val();
+    var c = $('#cvbn').val();
+
+    var encode_str = btoa(p + "@bww@" + ids);
+    var cpn_str = "";
+    if (c != '') {
+        cpn_str = "?coupon_code=" + c;
+    }
+    var url = software_url + "checkout/" + encode_str + cpn_str;
+    window.location.href = url;
+}
+
+function freebies(form_id, sel) {
+    var ids;
+    if (sel == 'bwwpage') {
+        ids = qwer;
+    } else if (sel == 'ppage') {
+        ids = $('#ids').val();
+    }
+    var c = $('#cvbn').val();
+    var p = $('#poiu').val();
+    var module = $('#module').val();
+//    var gift = check_gift_array();
+
+    var form = document.getElementById(form_id);
+    var hiddenField = document.createElement("input");
+    hiddenField.setAttribute("type", "hidden");
+    hiddenField.setAttribute("name", 'poiu');
+    hiddenField.setAttribute("value", p);
+    form.appendChild(hiddenField);
+
+    var hiddenField1 = document.createElement("input");
+    hiddenField1.setAttribute("type", "hidden");
+    hiddenField1.setAttribute("name", 'cvbn');
+    hiddenField1.setAttribute("value", c);
+    form.appendChild(hiddenField1);
+
+    var hiddenField2 = document.createElement("input");
+    hiddenField2.setAttribute("type", "hidden");
+    hiddenField2.setAttribute("name", 'bwwbundle_pro_ids');
+    hiddenField2.setAttribute("value", ids);
+    form.appendChild(hiddenField2);
+
+    var hiddenField3 = document.createElement("input");
+    hiddenField3.setAttribute("type", "hidden");
+    hiddenField3.setAttribute("name", 'module');
+    hiddenField3.setAttribute("value", module);
+    form.appendChild(hiddenField3);
+
+//    var hiddenField3 = document.createElement("input");
+//    hiddenField3.setAttribute("type", "hidden");
+//    hiddenField3.setAttribute("name", 'gift');
+//    hiddenField3.setAttribute("value", gift);
+//    form.appendChild(hiddenField3);
+    if(sel=='freepreview'){
+        var hiddenField4 = document.createElement("input");
+        hiddenField4.setAttribute("type", "hidden");
+        hiddenField4.setAttribute("name", 'isFreePreview');
+        hiddenField4.setAttribute("value", 'FreePreview');
+        form.appendChild(hiddenField4);
+    }
+    document.getElementById(form_id).submit();
+}
+function product_purchase(form_id, sel, payment = '') {
+    var ids;
+    if (sel == 'bwwpage') {
+        ids = qwer;
+    } else if (sel == 'ppage') {
+        ids = $('#ids').val();
+    }
+    if (payment != '') {
+        var contact = $('#contact').val();
+    }
+    var c = $('#cvbn').val();
+    var p = $('#poiu').val();
+    var module = $('#module').val();
+    var gift = check_gift_array();
+
+
+//    var encode_str = btoa(p + "@" + module);
+//    var cpn_str = "";
+//    if (c != '') {
+//        cpn_str = "?coupon_code=" + c;
+//    }
+//    window.location.href = software_url + "checkout/" + encode_str + cpn_str;
+
+
+
+    var form = document.getElementById(form_id);
+    var hiddenField = document.createElement("input");
+    hiddenField.setAttribute("type", "hidden");
+    hiddenField.setAttribute("name", 'poiu');
+    hiddenField.setAttribute("value", p);
+    form.appendChild(hiddenField);
+
+    var hiddenField1 = document.createElement("input");
+    hiddenField1.setAttribute("type", "hidden");
+    hiddenField1.setAttribute("name", 'cvbn');
+    hiddenField1.setAttribute("value", c);
+    form.appendChild(hiddenField1);
+
+    var hiddenField2 = document.createElement("input");
+    hiddenField2.setAttribute("type", "hidden");
+    hiddenField2.setAttribute("name", 'module');
+    hiddenField2.setAttribute("value", module);
+    form.appendChild(hiddenField2);
+
+    var hiddenField3 = document.createElement("input");
+    hiddenField3.setAttribute("type", "hidden");
+    hiddenField3.setAttribute("name", 'gift');
+    hiddenField3.setAttribute("value", gift);
+    form.appendChild(hiddenField3);
+
+    var hiddenField4 = document.createElement("input");
+    hiddenField4.setAttribute("type", "hidden");
+    hiddenField4.setAttribute("name", 'bwwbundle_pro_ids');
+    hiddenField4.setAttribute("value", ids);
+    form.appendChild(hiddenField4);
+    if(sel=='fromwbinar'){
+        var hiddenField4 = document.createElement("input");
+        hiddenField4.setAttribute("type", "hidden");
+        hiddenField4.setAttribute("name", 'is_webinar');
+        hiddenField4.setAttribute("value", 'true');
+        form.appendChild(hiddenField5);
+        
+    }
+    if (payment == 'razorpay') {
+        contact_len = contact.length;
+        var isnum = /^\d+$/.test(contact);
+        if (contact != '' && contact_len == 10 && isnum === true) {
+            var hiddenField5 = document.createElement("input");
+            hiddenField4.setAttribute("type", "hidden");
+            hiddenField4.setAttribute("name", 'contact_number');
+            hiddenField4.setAttribute("value", contact);
+            document.getElementById(form_id).submit();
+        } else {
+            if (contact_len != 10) {
+                document.getElementById('conerror').textContent = '10 Digit Contact Number Only.';
+            } else if (isnum === false) {
+                document.getElementById('conerror').textContent = 'Invalid Contact Number.';
+            } else {
+                document.getElementById('conerror').textContent = 'Contact Number is Required.';
+            }
+        }
+    }else {
+        document.getElementById(form_id).submit();
+    }
+}
+
+function buy_now(sel, form_id) {
+    var ids;
+    if (sel == 'bwwpage') {
+        ids = qwer;
+    } else if (sel == 'ppage') {
+        ids = $('#ids').val();
+    }
+    var p = $('#poiu').val();
+    var c = $('#cvbn').val();
+
+//    var encode_str = btoa(p + "@bww@" + ids);
+//    var cpn_str = "";
+//    if (c != '') {
+//        cpn_str = "?coupon_code=" + c;
+//    }
+//    var url = software_url + "checkout/" + encode_str + cpn_str;
+//    window.location.href = url
+
+    var form = document.getElementById(form_id);
+    var hiddenField = document.createElement("input");
+    hiddenField.setAttribute("type", "hidden");
+    hiddenField.setAttribute("name", 'poiu');
+    hiddenField.setAttribute("value", p);
+    form.appendChild(hiddenField);
+
+    var hiddenField1 = document.createElement("input");
+    hiddenField1.setAttribute("type", "hidden");
+    hiddenField1.setAttribute("name", 'bwwbundle_pro_ids');
+    hiddenField1.setAttribute("value", ids);
+    form.appendChild(hiddenField1);
+
+    var hiddenField2 = document.createElement("input");
+    hiddenField2.setAttribute("type", "hidden");
+    hiddenField2.setAttribute("name", 'cvbn');
+    hiddenField2.setAttribute("value", c);
+    form.appendChild(hiddenField2);
+
+    var hiddenField3 = document.createElement("input");
+    hiddenField3.setAttribute("type", "hidden");
+    hiddenField3.setAttribute("name", 'module');
+    hiddenField3.setAttribute("value", 'bww');
+    form.appendChild(hiddenField3);
+
+    document.getElementById(form_id).submit();
+}
+
+$(window).resize(showLoginPopupOnResize), $(function () {
+    $("#loginPopUp , #loginPopUpPage").keypress(function (a) {
+        13 == a.keyCode && (id = $(this).attr("id"), $("#" + id + " .panel1 .fieldsDiv img").click())
+    })
+}), $(function () {
+    $("#loginPopUp .panel2 , #forgot_page .panel2").keypress(function (a) {
+        13 == a.keyCode && (id = $(this).attr("class"), $("." + id + " .fieldsDiv input").click())
+    })
+}), $(function () {
+    $("#signUpPopUp , #signUpPopUpPage").keypress(function (a) {
+        13 == a.keyCode && (id = $(this).attr("id"), $("#" + id + " .fieldsDiv img").click())
+    })
+}), $(function () {
+    $("#loginPopUp #gPlusIcon").hover(function () {
+        url = img_url + "google+_over_image.png", $("#gPlusIcon img").attr("src", url)
+    }, function () {
+        url = img_url + "google+.png", $("#gPlusIcon img").attr("src", url)
+    })
+}), $(function () {
+    $("#loginPopUp #facebookIcon ").hover(function () {
+        url = img_url + "facebook_over_image.png", $("#facebookIcon img").attr("src", url)
+    }, function () {
+        url = img_url + "facebook.png", $("#facebookIcon img").attr("src", url)
+    })
+}), $(function () {
+    $("#loginPopUp .panel1 .fieldsDiv img  ,  #loginPopUpPage .panel1 .fieldsDiv img").hover(function () {
+        url = img_url + "sign in_button_over_image.png", $(this).attr("src", url)
+    }, function () {
+        url = img_url + "sign_in_button.png", $(this).attr("src", url)
+    })
+}), $(function () {
+    $(".closeBtn img ").hover(function () {
+        url = img_url + "close_button_over_image.png", $(this).attr("src", url)
+    }, function () {
+        url = img_url + "close_button.png", $(this).attr("src", url)
+    })
+}), $(function () {
+    $("#loginPopUp .panel2 .fieldsDiv .fgbtn , #loginPopUpPage .panel2 .fieldsDiv .fgbtn   ").hover(function () {
+        $(this).css("background-color", "#469e44")
+    }, function () {
+        $(this).css("background-color", "#54b551")
+    })
+}), $(function () {
+    $("#signUpPopUp  .fieldsDiv img ,#signUpPopUpPage  .fieldsDiv img ").hover(function () {
+        url = img_url + "sign_up_button_over_image.png", $(this).attr("src", url)
+    }, function () {
+        url = img_url + "sign up_button.png", $(this).attr("src", url)
+    })
+}), $(function () {
+    $("#redeemDiv_new").keypress(function (a) {
+        13 == a.keyCode && $("#redeemDiv_new .redeemDivApplyBtn").click()
+    })
+}), $(function () {
+    $("#coupn_input").keypress(function (a) {
+        13 == a.keyCode && $("#coupn_input .cp_proBtnApply").click()
+    })
+}), $(function () {
+    $("#search_txt").keypress(function (a) {
+        13 == a.keyCode && $("#search_btn").click()
+    })
+}), $(function () {
+    $("#kick_email").keypress(function (a) {
+        13 == a.keyCode && $("#kick_email_btn_sur").click()
+    })
+});
+
+
+/* scripts for gift course start */
+$(document).ready(function () {
+
+    // $('[data-toggle="popover"]').popover();
+
+// oldverion backlog---------
+    // $('[data-toggle="popover"]').popover({
+    //     trigger: 'manual',
+    //     placement:'top',
+    //     html :true,
+    //     title :'<a href="#" class="close" data-dismiss="alert" onclick="dismiss(this);">&times;</a>',
+    // }).click(function(e) {
+    //     $('.popover').not(this).hide(); /* optional, hide other popovers */
+    //     $(this).popover('show'); /* show popover now it's setup */
+    //     e.preventDefault();
+    // });
+
+
+    
+    $("#giftCourseButton").click(function (e) {
+        var form_id = 'gift_fenroll';
+        var data = {};
+        var p = $('#poiu').val();
+        data['cvbn'] = $("#cvbn").val();
+        data['module'] = $('#module').val();
+
+        var form = document.getElementById(form_id);
+        var hiddenField = document.createElement("input");
+
+        hiddenField.setAttribute("type", "hidden");
+        hiddenField.setAttribute("name", 'poiu');
+        hiddenField.setAttribute("value", p);
+        form.appendChild(hiddenField);
+
+        var hiddenField1 = document.createElement("input");
+        hiddenField1.setAttribute("type", "hidden");
+        hiddenField1.setAttribute("name", 'cvbn');
+        hiddenField1.setAttribute("value", data['cvbn']);
+        form.appendChild(hiddenField1);
+
+        var hiddenField2 = document.createElement("input");
+        hiddenField2.setAttribute("type", "hidden");
+        hiddenField2.setAttribute("name", 'module');
+        hiddenField2.setAttribute("value", data['module']);
+        form.appendChild(hiddenField2);
+
+        var hiddenField3 = document.createElement("input");
+        hiddenField3.setAttribute("type", "hidden");
+        hiddenField3.setAttribute("name", 'gift');
+        hiddenField3.setAttribute("value", 'Yes');
+        form.appendChild(hiddenField3);
+
+        document.getElementById(form_id).submit();
+    });
+    
+    $('.rightDivDetails').eq(1).attr('title', 'Please Enter Above Details');
+    $('#coupn_input').find("input[type='text'],input[type='email']").each(function () {
+        $(this).on("keydown", function (e) {
+            var keyCode = e.keyCode || e.which;
+            if (keyCode == 9) {
+                onLoadError = checkGiftInputErrors();
+                if (onLoadError == 0) {
+                    noErrors(".slidePaymentDetails");
+                } else {
+                    yesError(".slidePaymentDetails");
+                }
+
+            }
+        });
+        $(this).on("change", function (e) {
+            onLoadError = checkGiftInputErrors();
+            if (onLoadError == 0) {
+                noErrors(".slidePaymentDetails");
+            } else {
+                yesError(".slidePaymentDetails");
+            }
+        });
+
+    });
+    $("#gift_course_from").on("change", function (e) {
+        onLoadError = checkGiftInputErrors();
+        if (onLoadError == 0) {
+            noErrors(".slidePaymentDetails");
+        } else {
+            yesError(".slidePaymentDetails");
+        }
+    });
+
+//    if (window.performance && window.performance.navigation.type == window.performance.navigation.TYPE_BACK_FORWARD) {
+//        if (localStorage["dynamichtml"]) {
+//            $(".toBox").html(localStorage["dynamichtml"]);
+//        }
+//    } else {
+//        localStorage.removeItem('dynamichtml');
+//    }
+
+    $("body").on("click", ".slidePaymentDetails", function () {
+        //console.log('in click');
+        var onLoadError = 0;
+        $('#coupn_input').find("input[type='text'],input[type='email']").each(function () {
+            if ($(this).val() == '') {
+                onLoadError++;
+            }
+        });
+        if (onLoadError == 0) {
+            $(this).removeClass('opacity');
+            $(".giftEmailIdsLimit").html('');
+            $('.rightDivDetails').eq(1).removeAttr('title');
+            $('.slidePaymentDiv').slideToggle();
+            $('.slideToFromBox').slideUp();
+            $('.glyphicon-chevron-down').toggleClass('.glyphicon-chevron-up');
+        } else {
+            $(this).addClass('opacity');
+            $(".giftEmailIdsLimit").html('Please fill all details');
+            var offset = 200;
+            $('html, body').animate({
+                scrollTop: $(".giftEmailIdsLimit").offset().top - offset
+            }, 700);
+            $('.rightDivDetails').eq(1).attr('title', 'Please Enter Above Details');
+        }
+    });
+
+
+    $("body").on("click", ".slideToFromDetails", function () {
+        $('.slideToFromBox').slideToggle();
+        $('.slidePaymentDiv').slideUp();
+        $('.paymentButtons').slideUp();
+        $('.glyphicon-chevron-down').toggleClass('.glyphicon-chevron-up')
+    });
+
+    setTopMargin();
+    $(window).resize();
+
+    $(".enterCouponInputfield").on("blur", function () {
+        var e = $(this).attr("id");
+        if ("" == $("#" + e).val()) {
+            var t = e.replace("inp", "txt");
+            $("#" + t).show()
+            $("#" + t).html("Do not keep it blank");
+            err = 1;
+        } else {
+            var t = e.replace("inp", "txt");
+            $("#" + t).hide();
+
+            $("#" + t).html("Do not keep it blank");
+        }
+    });
+
+});
+
+$(window).on('resize', function () {
+    setTopMargin();
+  //  header_strip_ht();
+});
+
+// function header_strip_ht() {    
+//     var height_of_header = $(".headerMainShadow").height();
+//     var height_of_div = $(".divTimeLeft").height();
+//     var newth = height_of_div + height_of_header;     
+//     $(".aboutBannerSection").attr('style', 'margin-top: '+newth+'px !important');
+// }
+function dismiss(el){
+     $(el).closest('.popover').hide();
+    };
+function HideHeader(obj) {
+    $(obj).parent().css('display', 'none');
+    sessionStorage.setItem("header_strip", "close");
+
+   // header_strip_ht();
+    $.ajax({
+        url: software_url + "home/header_strip",
+        method: "POST",
+        dataType: 'json',
+        success: function (respose) {
+
+        }
+    });
+
+
+}
+;
+
+function header_strip_ht() {
+  //  var height_of_header = $(".headerMainShadow")[0].getBoundingClientRect();
+  //  var height_of_header_strip = $(".divTimeLeft")[0].getBoundingClientRect();
+  //  $(".aboutBannerSection").attr('style', 'margin-top: ' + (height_of_header.bottom * 0) + 'px !important');
+  //  $('.mblSearchTextbox').attr('style', 'top: ' + height_of_header.bottom + 'px !important');
+    //$('.headerMainShadow').attr('style', 'top: ' + height_of_header_strip.bottom + 'px !important');
+}
+
+
+function setTopMargin() {
+    if ($(window).width() > 973) {
+        var height_of_div1 = $(".divPrice").height();
+        var divVideo = $(".leftSideVidImage").height();
+        var newHeight = -(height_of_div1 - divVideo);
+        var fullHt = $('.divMain').height();
+        var archiveSet = -(fullHt - height_of_div1);
+        if (newHeight > 0)
+        {
+            $(".divInfo").css('margin-top', '10px');
+            $('.divarchiveSet').css('margin-top', archiveSet);
+
+        } else {
+            $(".divInfo").css('margin-top', newHeight);
+            $('.divarchiveSet').css('margin-top', '0px');
+        }
+    } else {
+        $(".divInfo").css('margin-top', '10px');
+        $('.divarchiveSet').css('margin-top', '10px');
+    }
+}
+
+function checkGiftInputErrors() {
+    var onLoadError = 0;
+    $('#coupn_input').find("input[type='text'],input[type='email']").each(function () {
+        if ($(this).val() == '') {
+            onLoadError++;
+        }
+    });
+    return onLoadError;
+}
+function noErrors(obj) {
+    $(obj).removeClass('opacity');
+}
+function yesError(obj) {
+    $(obj).addClass('opacity');
+}
+
+function check_gift_array() {
+
+    var gift = {};
+    // datas = {};
+    gift['to'] = {};
+    gift['gift_course_from'] = $('#gift_course_from').val();
+    gift['gift_course_from_name'] = $('#gift_course_from_name').val();
+
+    var i = 0;
+    var j = 0;
+    var g_to = {};
+
+    $(".gift_to").each(function () {
+
+        g_to[i] = {
+            "gift_course_to_name": $(this).children().find('.gift_to_n').val(),
+            "gift_course_to": $(this).children().find('.gift_to_e').val()
+        };
+
+        i++;
+
+    });
+
+    gift['to'] = g_to;
+    gift['noOfGiftEmailIds'] = i;
+
+    var encoded = btoa(JSON.stringify(gift))
+    return encoded;
+}
+
+function checkForGiftInputs(form_id) {
+    data = {};
+    $('#coupn_input').find("input[type='text'],input[type='email']").each(function () {
+        data[$(this).attr('id')] = {"value": $(this).val(), "type": $(this).attr('type'), "disabled": $(this).attr('disabled')};
+    });
+    data['noOfGiftEmailIds'] = {"value": $("#noOfGiftEmailIds").val(), "type": 'hidden'};
+    $.ajax({
+        url: software_url + "Giftcourse/checkGiftEmailId",
+        method: "POST",
+        data: data,
+        dataType: 'json',
+        success: function (respose) {
+            if (respose.msg == 'Success') {
+                $(".coup_msg").html('');
+                if (form_id) {
+                    product_purchase(form_id);
+                } else {
+                    pay_citrus();
+                }
+            } else {
+                if (respose.msg == '') {
+                    var errorMsg = "Please " + $("#" + respose.field_name).attr("placeholder");
+                    $(".coup_msg").html('');
+                    $("span." + respose.field_name).html(errorMsg);
+                } else {
+                    $(".coup_msg").html('');
+                    $("span." + respose.field_name).html(respose.msg);
+                }
+                var offset = 150;
+                var spanclass = respose.field_name;
+                $('html, body').animate({
+                    scrollTop: $("input#" + spanclass).offset().top - offset
+                }, 700);
+                $(".slideToFromDetails").trigger("click");
+            }
+        }
+    });
+}
+
+/* moved code from view payment_confirmation starts */
+function pay_citrus() {
+    var err = pay_validation();
+    if (err == 0) {
+        var datas = {
+            call: 'ajax',
+            poiu: $('#poiu').val(),
+            pay: 3,
+            module: $('#module').val(),
+            cvbn: $('#cvbn').val(),
+            use_wallet: $('#walt_chkf').val()
+        };
+        if ($('#module').val().trim() == 'bww') {
+            datas['bwwbundle_pro_ids'] = $('#ids').val();
+        }
+        if ($('#gift').val() == 'Yes') {
+            datas['gift'] = check_gift_array();
+            // datas['gift'] = $.parseJSON(datas['gift']); 
+        }    
+
+        loading($(".payPalButton"), '');
+
+        $.ajax({
+            type: "POST",
+            url: software_url + "payments/pay",
+            data: datas,
+            success: function (data) {
+                $(".payPalButton").removeClass("capply");
+                loading_stop($(".payPalButton"), '');
+                var result = $.parseJSON(data);
+                if (result.status == 'course_exists') {
+                    window.location.href = result.url;
+                } else if (result.status == 'error') {
+                    alert('Error while selecting the courses please try again.');
+                    window.location.href = result.url;
+                } else {
+                    if (result.ack.status == 'success') {
+                        var dataObj = {
+                            orderAmount: result.TotalAmt,
+                            currency: result.display.currency,
+                            email: $('#inpEmailID').val(),
+                            phoneNumber: $('#inpPhoneNumber').val(),
+                            merchantTxnId: result.orderNo,
+                            returnUrl: result.return_url,
+                            vanityUrl: result.vanityUrl,
+                            secSignature: result.securitySignature,
+                            addressStreet1: $('#inpAddress').val(),
+                            addressCity: $('#inpCity').val(),
+                            addressState: $('#inpState').val(),
+                            addressCountry: $('#drpDwnCountry').val(),
+                            addressZip: $('#inpZipCode').val(),
+                            notifyUrl: result.notify_url,
+                            mode: "dropAround"
+                        };
+                        configObj = {
+                            eventHandler: function (cbObj) {
+                                if (cbObj.event === 'icpLaunched') {
+                                    console.log('Overlay is launched');
+                                    // Place to understand when overlay is launched on your website
+                                } else if (cbObj.event === 'icpClosed') {
+                                    // Place to understand when overlay is closed on your website. 
+                                    // This might be closure of the overlay or completion of the order with successful payment.
+                                    // Hence capturing message object is important to know exact status of the order
+                                    //alert(JSON.stringify(cbObj.message));
+                                    console.log('Overlay is closed');
+                                }
+                            }
+                        };
+                        // alert('a');
+
+                        citrusICP.launchIcp(dataObj, configObj);
+                    } else if (result.ack.status == 'failed') {
+                        switch (result.ack.msg) {
+                            case 'redirect':
+                                if (!result.ack.reason || result.ack.reason == '') {
+                                    alert('Error while processing , Please try again...');
+                                } else {
+                                    alert(result.ack.reason);
+                                }
+                                window.location.href = result.ack.urlwindow;
+                                break;
+                            default:
+                                alert('Error while processing , Please refresh and try again...');
+                                break;
+                        }
+                    }
+                }
+
+            }
+            ,
+            error: function (requestObject, error, errorThrown) {
+                alert(error);
+                alert(JSON.stringify(requestObject));
+                alert(errorThrown);
+            }
+        });
+    }
+    return false;
+}
+
+function isNumber(e) {
+    var t = e.which ? e.which : e.keyCode;
+    return 46 != t && t > 31 && (48 > t || t > 57) ? !1 : !0
+}
+
+function onkeydownChkChar() {
+    //                    var e = String.fromCharCode(event.keyCode),
+    //                            t = /[a-zA-Z]/;
+    //                    t.test(e) || (event.returnValue = !1)
+    var inputValue = event.which;
+    // allow letters and whitespaces only.
+    if ((inputValue > 47 && inputValue < 58) && (inputValue != 32)) {
+        event.preventDefault();
+    }
+}
+
+function resetAll() {
+    $(".enterCouponInputfield").val("")
+}
+
+function pay_validation() {
+    //FOR CHECKING BLANK
+    var err = 0;
+    $(".enterCouponInputfield").each(function () {
+        var e = $(this).attr("id");
+        if ("" == $("#" + e).val()) {
+            var t = e.replace("inp", "txt");
+            $("#" + t).show()
+            $("#" + t).html("Do not keep it blank");
+            err = 1;
+        } else {
+
+            var t = e.replace("inp", "txt");
+            $("#" + t).hide();
+
+            $("#" + t).html("Do not keep it blank");
+        }
+    });
+    var e = document.getElementById("drpDwnCountry");
+
+    if (e.value == "select")
+    {
+        $("#txtCountry").show();
+        err = 1;
+    } else {
+        $("#txtCountry").hide();
+    }
+
+
+    //FOR EMAIL CHECKING
+    var e = document.getElementById("inpEmailID"),
+            t = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+
+    if (t.test(e.value))
+    {
+
+    } else
+    {
+
+        $("#txtEmailID").show();
+        err = 1;
+        if ($("#inpEmailID").val() == "")
+        {
+            $("#txtEmailID").html("Do not keep it blank.");
+        } else
+        {
+            $("#txtEmailID").html("Please Provide Valid email id");
+        }
+
+    }
+    return err;
+}
+
+
+function chkDropDown()
+{
+    var e = document.getElementById("drpDwnCountry");
+
+    if (e.value == "select")
+    {
+        $("#txtCountry").show();
+        err = 1;
+    } else {
+        $("#txtCountry").hide();
+    }
+}
+
+function setConfPageTabActive(obj)
+{
+    $(".commonPayTab").each(function () {
+        var id = $(this).attr("id");
+        if (id == obj)
+        {
+            var currId = $("#" + obj).find('a').attr("value");
+            $('#' + currId).addClass('active in')
+        } else {
+            var currId = $("#" + id).find('a').attr("value");
+            $('#' + currId).removeClass('active in')
+        }
+    })
+}
+
+function removeRow(obj)
+{
+    $("." + $(obj).attr('removeClass')).remove();
+    counter = $("#noOfGiftEmailIds").val();
+    var oldProductPrice = $("#giftPrice").attr("giftPrice");
+    var giftPriceUnit = $("#giftPrice").attr("giftPriceUnit");
+    var NewProductPrice = (counter - 1) * oldProductPrice;
+    $("#giftPrice").val(giftPriceUnit + NewProductPrice);
+    $("#noOfGiftEmailIds").val(counter - 1)
+}
+function addEmailIds()
+{
+    counter = $("#noOfGiftEmailIds").val();
+    if (counter < 5) {
+        removeClass = "rowEmailTo-" + counter;
+        var html = '<div class="row comD marginTxtBottom15 gift_to rowEmailTo-' + counter + '">';
+        html += '<div class="col-md-6">';
+        html += '<label for="inpForTo"></label>';
+        html += '<input type="text" class="form-control inputHeight gift_to_n" id="multipleGiftName-' + counter + '" name="multipleGiftName-' + counter + '" placeholder="Receiver\'s Name">';
+        html += '<span class="coup_msg multipleGiftName-' + counter + '"></span>';
+        html += '</div>';
+        html += '<div class="col-md-6 pdL0 iconPosRel">';
+        html += '<label for="inpEmail"><button type="button" class="btn btn-link mt20 removeText" onclick="removeRow(this);" removeClass="' + removeClass + '">Remove</button></label>';
+        html += '<input type="email" class="form-control inputHeight gift_to_e" id="multipleGiftEmail-' + counter + '" name="multipleGiftEmail-' + counter + '" placeholder="Receiver\'s Email">';
+        html += '<span class="coup_msg multipleGiftEmail-' + counter + '"></span>';
+        html += '</div>';
+        html += '</div>';
+        if (counter == 1) {
+            $(".copyRow:last").after(html)
+        } else {
+            $(".toBox .comD:last").after(html)
+        }
+        $(".giftEmailIdsLimit").html('');
+        counter++;
+        var oldProductPrice = $("#giftPrice").attr("giftPrice");
+        var giftPriceUnit = $("#giftPrice").attr("giftPriceUnit");
+        var NewProductPrice = (counter) * oldProductPrice;
+        NewProductPrice = Math.round(NewProductPrice).toFixed(2);
+        $("#giftPrice").val(giftPriceUnit + NewProductPrice);
+        $("#noOfGiftEmailIds").val(counter)
+    } else {
+        $(".giftEmailIdsLimit").html('You can add upto 5 email ids.');
+        var offset = 250;
+        $('html, body').animate({scrollTop: $(".giftEmailIdsLimit").offset().top - offset}, 700)
+    }
+}
+
+
+function downloadvideo(obj, id, id2) {
+    $(obj).addClass('dn');
+    loading($(obj).closest('td'), "");
+    $.ajax({
+        method: "POST",
+        url: software_url + "dashboard/downloadvideo",
+        data: {id: id, id2: id2}
+    })
+            .done(function (data) {
+                var result = JSON.parse(data);
+                if (result.status == 'success') {
+                    loading_stop($(obj).closest('td'), "");
+                    $(obj).removeClass('dn');
+                    window.location.href = result.link;
+                } else {
+                    loading_stop($(obj).closest('td'), "");
+                    $(obj).removeClass('dn');
+                    alert(result.msg);
+                }
+            });
+}
+
+function fill_cpn_courses(mode, coupon_id, type) {
+    var async1 = $.ajax({//ajax call 1
+        type: "POST",
+        url: software_url + 'course_creation/get_product_list',
+        data: {module: "courses", mode: mode, coupon_id: coupon_id, cc_access: cc_access_str},
+        success: function (data1) {
+            var dd_clist = "";
+            data1 = JSON.parse(data1);
+            $.each(data1, function (i, item) {
+                dd_clist += "<a><label class='curPointer'><input class='chk_courses chk_course' name='type' value='" + item.ProductID + "' type='checkbox'" + item.chk_status + "   /> <span class='chk_lbl'>" + item.ProductName + " - $<span clas='productVal'>" + item.ProductValue + "</span></span></label><input min='9' step='.01' class='ca_price' value='" + item.price + "' type='number'/></a>";
+            });
+            $("#dd_courses").append(dd_clist);
+            // $("#dd_courses").append(dd_clist);
+        }
+    });
+
+    if (type == 'all') {
+        var async2 = $.ajax({//ajax call 2
+            type: "POST",
+            url: software_url + 'course_creation/get_product_list',
+            data: {module: "deals", mode: mode, coupon_id: coupon_id},
+            success: function (data2) {
+                var dd_dlist = "";
+                data2 = JSON.parse(data2);
+                $.each(data2, function (i, item) {
+                    dd_dlist += "<a><label class='curPointer'><input class='chk_deals' name='type' value='" + item.deals_id + "' type='checkbox'" + item.chk_status + " /> <span class='chk_lbl'>" + item.deals_name + " - $ <span clas='productVal'>" + item.finalprice + "</span></span></label>\n\
+                    <input min='10' class='da_price' value='" + item.price + "' type='number'/></a>";
+                });
+                // $("#dd_deals").append(dd_dlist);
+                $("#dd_deals").append(dd_dlist);
+            }
+        });
+        var async3 = $.ajax({//ajax call 3
+            type: "POST",
+            url: software_url + 'course_creation/get_product_list',
+            data: {module: "bww", mode: mode, coupon_id: coupon_id},
+            success: function (data3) {
+                var dd_bwwlist = "";
+                data3 = JSON.parse(data3);
+                $.each(data3, function (i, item) {
+                    dd_bwwlist += "<a><label class='curPointer'><input class='chk_bww' name='type' value='" + item.bundle_deals_id + "' type='checkbox'" + item.chk_status + " /> <span class='chk_lbl'>" + item.bundle_deals_name + " - $<span clas='productVal'>" + item.ProductValue + "</span></span></label><input min='10' class='ba_price' value='" + item.price + "' type='number'/></label></a>";
+                });
+                $("#dd_bww").append(dd_bwwlist);
+                //                            $("#dd_bww").append(dd_bwwlist);
+            }
+        });
+        $.when(async1, async2, async3).done(function (result1, result2, result3) {
+            //jQuery(".conten_wrapper").removeClass('loader_wrap_active');
+        });
+    } else {
+        $.when(async1).done(function (result1) {
+            //jQuery(".conten_wrapper").removeClass('loader_wrap_active');
+        });
+    }
+
+
+}
+
+
+
+var clicks = 0;
+//function update_panels(call) {
+//    console.log(call + "--" + clicks);
+//    if (call == clicks) {
+//        $.ajax({
+//            method: "POST",
+//            url: software_url + "product/update_panels",
+//        })
+//                .done(function (data) {
+//                    var content = JSON.parse(data);
+//                    $('#cart_tb').html(content.cart);
+//                    $('#SL_tb').html(content.SL_cart);
+//                    $('#div_pricing').html(content.cart_pricing);
+//                    $('#cart_count').val(content.cart_count);
+//                    $('.cart_dis').text(content.cart_count);
+//                    cart_count =  content.cart_count;
+//                    if (content.cart_count > 0) {
+//                        $('#list_div').removeClass('col-md-12').addClass('col-md-8');
+//                        $('#div_pricing').removeClass('dn');
+//                    } else {
+//                        $('#list_div').removeClass('col-md-8').addClass('col-md-12');
+//                        $('#div_pricing').addClass('dn');
+//                    }
+//
+//                    $('#loaderLayerfile').addClass('dn');
+//                });
+//    }
+//
+//}
+
+
+function update_headcart_list() {
+    $('.hideLoader_cart').removeClass('dn')
+    $.ajax({
+        method: "POST",
+        url: software_url + "product/update_headcart_list",
+    })
+            .done(function (data) {
+                $('.crt_list_head').html(data);
+                $('.hideLoader_cart').addClass('dn')
+            });
+}
+
+function use_wallet_amt(obj){
+  
+    $('#loaderLayerfile').removeClass('dn'); 
+    
+    var chk = 0;
+    var secret_int =  $("#i_sec").val();
+
+    if($(obj).is(":checked")){
+        chk = 1;
+    }            
+    
+    $.ajax({
+        method: "POST",
+        url: software_url + "product/use_wallet_amt",
+        data: {chk: chk , secret_int:secret_int}
+    }).done(function (data) {
+            
+        var res = JSON.parse(data);
+        if(chk == 0){
+            $('.shw_walt_disc').addClass('dn');
+        }else{
+            $('.shw_walt_disc').removeClass('dn');
+        }
+
+        $('#wallet_disc').text(res.wallet_disc);
+        $('#walt_chkf').val(chk);
+        $('input[name="use_wallet"]').val(chk);
+        $('.total_ProductV').text(res.total_ProductValue);
+        $('.show_sub_total').html('<b>'+res.currency + res.display.amt_break.amount+'</b>');
+        $('#tax').html('<b>+ '+res.currency + res.display.tax_amt+'</b>');
+        
+        $('.final_shw_amt').html('<b>'+res.currency + res.total+'</b>');
+
+        $('#loaderLayerfile').addClass('dn');
+    });
+}
+
+function addtocart(curr_obj, cid, cpid, module, via, presale_group_id = '') {
+    var postData = {};
+	if (cid != '') {
+        cart_count = parseInt(cart_count) + 1;
+        cpid = $('#cvbn').val();
+        if (via == 'c_list') {
+            (module == 'courses') ? ($('.wishcartthmbcomm_' + cid +' .cartIcon').html("<i class='fas fa-shopping-cart isInCart'></i>")) : ($(curr_obj).parent('.cartIcon').html("<i class='fas fa-shopping-cart isInCart'></i>"));
+        } else if (via == 'cpop_list') {
+            $('.cartIcnhover_'+ cid).html(`<strong>
+                                                     <a href='${software_url}cart'>Go To Cart</a>
+                                                     </strong>`);
+        } else if (via == 'offer_page' || via == 'promotional_page') {
+            $(curr_obj).parents('.addcart_div').html("<a href='" + software_url + "cart' target='_blank' style='text-decoration:none;'><button class='btn btn-main btn-block btn-Pro'>Go To Cart</button></a>");
+        }else if (via=='searchedcourses')
+         {
+            $(curr_obj).parents('.addcart_div').html(`
+                 <a href='${software_url}cart'>
+                    <strong><i class="fas fa-shopping-cart" style="color: #fcb752;"></i></strong>
+                 </a>`);
+            $('.addtoc_btn').html(`
+                 <a href='${software_url}cart'>
+                    <strong><i class="fas fa-shopping-cart" style="color: #fcb752;"></i></strong>
+                 </a>
+                `);
+            $('#continueShopButton').removeClass('dn');
+            $('#div_paid').addClass('dn');
+         }
+        else if (via == 'presale_product_page'){
+            
+            $('.addcart_div').html(`
+                <button class='btn btn-main btn-block btn-Pro'>
+                    <strong><a href='${software_url}cart'>Go To Cart</a></strong>
+                </button>`);
+            $('.presalePacakgeFooterButton').html(`
+                <button class='btn btn-main btn-block btn-Pro'>
+                    <strong><a href='${software_url}cart'>Go To Cart</a></strong>
+                </button>`);
+            $('#continueShopButton').removeClass('dn');
+            $('#div_paid').addClass('dn');
+        }
+         else {
+            $(curr_obj).parents('.addcart_div').html(`
+                <button class='btn btn-main btn-block btn-Pro'>
+                    <strong><a href='${software_url}cart'>Go To Cart</a></strong>
+                </button>`);
+            $('.addtoc_btn').html(`
+                <button class='btn btn-main btn-block btn-Pro'>
+                    <strong><a href='${software_url}cart'>Go To Cart</a></strong>
+                </button>`);
+            $('#continueShopButton').removeClass('dn');
+            $('#div_paid').addClass('dn');
+        }
+
+        var ids = "";
+        if (module == 'bww') {
+            ids = qwer;
+            incart = '1';
+        }
+
+        if(presale_group_id != ''){
+            postData = {cid: cid, cpid: cpid, module: module, ids: ids, presale_group_id: presale_group_id}
+        }else{
+            postData = {cid: cid, cpid: cpid, module: module, ids: ids}
+        }
+        // var curr_click = ++clicks;
+        $('#loaderLayerfile').removeClass('dn');
+        $('.cart_dis').text(cart_count);
+        $.ajax({
+            method: "POST",
+            url: software_url + "product/addtocart",
+            //data: {cid: cid, cpid: cpid, module: module, ids: ids}
+            data: postData
+        })
+                .done(function (data) {
+                    //data = data.substr(3);
+
+                    var res = JSON.parse(data);
+                    //alert(res.status);
+                    if (res.status == 'success') {
+                        //alert('success');                      
+                        $('#cart_count').val(res.items_count);
+                        update_headcart_list();
+
+                        // $.ajax({
+                        //     method: "POST",
+                        //     url: software_url + "product/netcoreData",
+                        //     data: {cid: cid, cpid: cpid, module: module, ids: ids}
+                        // }) .done(function (data) {
+                        //     console.log(JSON.parse(data));
+                        //     smartech('dispatch', 'Add to Cart', JSON.parse(data));
+                        // });
+                        
+                    } else {
+                        // alert('fail');
+                        window.location = res.url;
+                    }
+                    // $('.cart_dis').text(data);                                
+                });
+    }
+}
+
+//-----Author: Sagar Kodalkar---------------
+function enrollNow(userid, product_id, module,redirect_url) {
+    var newID = 'enroll'+product_id;
+    $('#newID').html('Enrolling...');
+    $.ajax({
+        type: "POST",
+        url: software_url + "product/addEnrollNow",
+        data: {userid: userid, product_id: product_id, module: module},
+        success: function(data){
+            window.location.href = redirect_url;
+        },
+        error: function() { alert("Error Enroll Now."); }
+    });
+}
+
+function redirectTo(uri) {
+    window.location.href = software_url + uri;
+}
+function redirectToCart(uri) {
+    window.setTimeout(function(){
+         window.location.href = software_url + uri;
+
+    }, 1000);
+   
+}
+
+function remove4mCart(curr_obj, cid, module, mar, price, cpn_name, rem_type) {
+    if (cid != '') {
+        //var curr_click = ++clicks;
+        cart_count = parseInt(cart_count) - 1;
+//        if (rem_type == 'SL') {
+//            var html = "<tr>" + $(curr_obj).closest('tr').html() + "</tr>";
+//            var $tr = $('<div />', {html: html});
+//            $tr.find('.C_rem').replaceWith("<a class='C_rem' onclick=\"remove4mSL(this, '" + cid + "','" + module + "')\">Remove</a>");
+//            $tr.find('.C_action').replaceWith("<a class='C_action' onclick=\"SL_to_AC(this,'" + cid + "', '" + cpn_name + "', '" + module + "', '" + mar + "', '" + price + "')\" > Add to Cart </a>");
+//            //$('#SL_div table > tbody > tr:first').before($tr.html());            
+//            $($tr.html()).prependTo($("#SL_div table > tbody"));
+//            $("#SL_div table > tbody .tr_emty").remove();
+//        } else {
+         $('#loaderLayerfile').removeClass('dn');
+//        }
+
+        $(curr_obj).closest('tr').remove();
+        var total_mar = $('#total_mar').text();
+        var total = $('#total').text();
+
+        var new_total_mar = parseInt(total_mar) - parseInt(mar);
+        var new_total = parseInt(total) - parseInt(price);
+        $('#total_mar').text(new_total_mar);
+        $('#total').text(new_total);
+        $('#you_save').text(parseInt(new_total_mar) - parseInt(new_total));
+        $('.cart_dis').text(cart_count);
+        $('#cart_item').text(cart_count);
+
+        updatePricesDivs(new_total);
+
+        if ($('#cart_count').val().trim() == 0) {
+            $('#cart_div  table > tbody').html("<tr class='tr_emty'><td style='text-align:center'><img src='" + software_url + "assets/images/empty_cart.png'  style='width:320px; height:250px; display:block; margin:auto;'/><p style='margin-left: 35px;margin-bottom: 0px;'>Your Shopping Cart is empty</p><h4 style='margin-top:0px;'><a href='" + software_url + "courses' class='btn btn-default btnShp' style='margin-left: 30px;'>Continue Shopping</a></h4></td></tr>");
+            $('#div_pricing').addClass('dn');
+            $('#list_div').removeClass('col-md-8').addClass('col-md-12');
+        }
+        //$('#loaderLayerfile').removeClass('dn');
+        $.ajax({
+            method: "POST",
+            url: software_url + "product/remove4mCart",
+            data: {cid: cid, module: module, rem_type: rem_type}
+        })
+                .done(function (data) {
+//                    var cart_cnt = data.trim();
+//                    if (cart_cnt == 0) {
+//                        $('#list_div').html(`<div class="emptyCartContentWrap text-center" style="margin-top: 10px;">
+//                                                <img src="${software_url+"assets/images/"}empty_cart.png" style="width:280px; height: 220px;"/>
+//                                                <div class="continueShopping">
+//                                                    <p style='margin-left: 35px;margin-bottom: 0px;'>Your Shopping Cart is empty</p>
+//                                                    <h4 style='margin-top:0px;'><a href="${software_url+"courses"}" class="btn btn-default btnShp" style="margin-left: 30px;">Continue Shopping</a></h4>
+//                                                </div> `);
+//                        $('#div_pricing').addClass('dn');
+//                        $('#list_div').removeClass('col-md-8').addClass('col-md-12')
+//                        $('#list_div').removeClass('col-lg-8').addClass('col-lg-12');
+//                    } else {
+//                        $('#cart_count').val(cart_cnt);
+//                    }
+//                    update_headcart_list();
+            
+                    var res = JSON.parse(data);
+                    var cart_cnt = res.item_cnt;
+                    if (cart_cnt == 0) {
+                        $('#list_div').html(`<div class="emptyCartContentWrap text-center" style="margin-top: 10px;">
+                                                <img src="${software_url+"assets/images/"}empty_cart.png" style="width:280px; height: 220px;"/>
+                                                <div class="continueShopping">
+                                                    <p style='margin-left: 35px;margin-bottom: 0px;'>Your Shopping Cart is empty</p>
+                                                    <h4 style='margin-top:0px;'><a href="${software_url+"courses"}" class="btn btn-default btnShp" style="margin-left: 30px;">Continue Shopping</a></h4>
+                                                </div> `);
+                        $('#div_pricing').addClass('dn');
+                        $('#list_div').removeClass('col-md-8').addClass('col-md-12')
+                        $('#list_div').removeClass('col-lg-8').addClass('col-lg-12');
+                    } else {
+                        $('#cart_count').val(cart_cnt);
+                        if(res.via == 'cart_cpn'){
+                            $('#cart_tb').html(res.cart_html);
+                            $('#cpnModal').html(res.cart_avail_cpn);
+                            $('#total_mar').text(res.total_mar);
+                            $('#total').text(res.total);
+                            $('#you_save').text(res.you_save);
+                            $('#sitewide_discount').text(res.sitewide_discount);
+                            $('#total_ProductValue').text(res.total_ProductValue);
+                            if(res.cashback_amt == 0 || res.total == 0){
+								$('#cshbk_tr').addClass('dn');
+                                $('#cashback_amt').addClass('dn');
+                            }else{
+								$('#cshbk_tr').removeClass('dn');
+                                $('#cashback_amt').removeClass('dn');
+                            }
+                            $('#cashback_amt').text(res.cashback_amt);
+                            
+                            if(res.cart_discount_amt > 0){
+                                $('#cart_cpn_disc').removeClass('dn');
+                                $('#cart_old_total').removeClass('dn');
+                                $('#crt_old_total').html(res.old_cart_total);
+                                $('#crt_cpn_disct').html(res.cart_discount_amt);
+                            }else{
+                                $('#cart_cpn_disc').addClass('dn');
+                                $('#cart_old_total').addClass('dn');
+                            }
+                            if(res.total_save_combo <= 0){
+                                $('#combo_discount_div').addClass('dn');
+                            }else{
+                                $('#cart_old_total').removeClass('dn');
+                                $('#crt_old_total').html(res.old_cart_total);
+                                $('#combo_discount').text(res.total_save_combo);
+                            }
+                            updateapplied_cpn_crt(res.applied_cpn, '', res.auto_cpn_arr);
+                            updatePricesDivs(res.total);
+                            //$('#loaderLayerfile').addClass('dn');
+                        }
+                    }
+                    if (!res.cart_promote_view) {
+                        $('#cart_promote').html("");
+                    } else {
+                        $('#cart_promote').html(res.cart_promote_view);
+                    }
+                    
+                    update_headcart_list();
+
+                    update_wintersale_gifts(res.winterSaleFlag);
+
+                    //update_panels(curr_click);
+                    $('#loaderLayerfile').addClass('dn');
+                     // $.ajax({
+                     //        method: "POST",
+                     //        url: software_url + "product/netcoreData",
+                     //        data: {cid: cid, module: module}
+                     //    }) .done(function (data) {
+                     //           var result = JSON.parse(data);
+                     //           result.items[0].prqt = -1;
+                     //        console.log(result);
+                     //        smartech('dispatch', 'Remove from Cart',result);
+                     //    });
+
+                });
+    }
+}
+
+function updatePricesDivs(new_total) {
+    prices = this.calculateTaxes(new_total);
+    $('#subtotal').text(prices.subtotal);
+    $('#gst').text(prices.gst);
+}
+
+function calculateTaxes(total) {
+    var gst = Math.round((total * 18) / 118);
+    return {
+        gst: gst,
+        subtotal: (total - gst).toFixed(2)
+    }
+}
+
+function updateapplied_cpn_crt(new_list, app_filt, auto_cpn_arr){
+    var cpn_html = '';
+    var shw_all = 'dn';
+    if(app_filt != ''){
+       shw_all = '';
+    }
+    var size = Object.keys(new_list).length;
+    if(size > 0){
+        cpn_html = '<div class="card dashBorder"><div><span>Applied Coupons :</span><span class="float-right shw_all_cpn '+shw_all+'"><a style="color: #337ab7;" onclick="view_all_cartcpn();">View All Coupons</a></span></div><ul>';
+        $.each( new_list, function( key, value ) {
+            var app_key = '';
+            if(app_filt != key && app_filt != ''){
+                app_key = 'dn';
+            }
+            var auto_key = 1;
+            if(key in auto_cpn_arr){
+                auto_key = 2;
+            }
+            cpn_html += '<li id="cli_'+ key +'" class="shw_cpn_li '+app_key+'"><span class="cursPt" onclick="cart_cpn_filter('+ key +');"><b>'+ value +'</b> is applied</span> &nbsp;&nbsp;<span onclick="remove_coup_cart(this, \'RA\', \'\', \'\', \'\', \'all\', '+ key +', '+ auto_key +');" class="cursPt cross_delt"><b>x</b></span></li>';
+        });
+        cpn_html += '</ul></div>';
+    }
+    $('.applied_cpn_crt').html(cpn_html);
+}
+
+function cart_cpn_filter(cpn_id){
+    $('.shw_cpn_tr').addClass('dn');
+    $('.cpn_' + cpn_id).removeClass('dn');
+    $('.shw_all_cpn').removeClass('dn');
+    $('.shw_cpn_li').addClass('dn');
+    $('#cli_' + cpn_id).removeClass('dn');
+}
+
+function view_all_cartcpn(){
+    $('.shw_all_cpn').addClass('dn');
+    $('.shw_cpn_tr').removeClass('dn');
+    $('.shw_cpn_li').removeClass('dn');
+}
+
+function remove4mCart_bogo(curr_obj, cid, module, mar, price, cpn_name, rem_type) {
+
+    if (cid != '') {
+        //var curr_click = ++clicks;
+        cart_count = parseInt(cart_count) - 1;
+//        if (rem_type == 'SL') {
+//            var html = "<tr>" + $(curr_obj).closest('tr').html() + "</tr>";
+//            var $tr = $('<div />', {html: html});
+//            $tr.find('.C_rem').replaceWith("<a class='C_rem' onclick=\"remove4mSL(this, '" + cid + "','" + module + "')\">Remove</a>");
+//            $tr.find('.C_action').replaceWith("<a class='C_action' onclick=\"SL_to_AC(this,'" + cid + "', '" + cpn_name + "', '" + module + "', '" + mar + "', '" + price + "')\" > Add to Cart </a>");
+//            //$('#SL_div table > tbody > tr:first').before($tr.html());            
+//            $($tr.html()).prependTo($("#SL_div table > tbody"));
+//            $("#SL_div table > tbody .tr_emty").remove();
+//        } else {
+        // $('#loaderLayerfile').removeClass('dn');
+//        }
+        $('#loaderLayerfile').removeClass('dn');
+        // $(curr_obj).closest('tr').remove();
+//        var total_mar = $('#total_mar').text();
+//        var total = $('#total').text();
+//
+//        var new_total_mar = parseInt(total_mar) - parseInt(mar);
+//        var new_total = parseInt(total) - parseInt(price);
+
+//        $('#total_mar').text(new_total_mar);
+//        $('#total').text(new_total);
+//        $('#you_save').text(parseInt(new_total_mar) - parseInt(new_total));
+        $('.cart_dis').text(cart_count);
+        $('#cart_item').text(cart_count);
+
+        if ($('#cart_count').val().trim() == 0) {
+            $('#cart_div  table > tbody').html("<tr class='tr_emty'><td style='text-align:center'><img src='" + software_url + "assets/images/empty_cart.png'  style='width:320px; height:250px; display:block; margin:auto;'/><p style='margin-left: 35px;margin-bottom: 0px;'>Your Shopping Cart is empty</p><h4 style='margin-top:0px;'><a href='" + software_url + "courses' class='btn btn-default btnShp' style='margin-left: 30px;'>Continue Shopping</a></h4></td></tr>");
+            $('#div_pricing').addClass('dn');
+            $('#list_div').removeClass('col-md-8 col-lg-8').addClass('col-md-12');
+        }
+        //$('#loaderLayerfile').removeClass('dn');
+        $.ajax({
+            method: "POST",
+            url: software_url + "product/remove4mCart",
+            data: {cid: cid, module: module, rem_type: rem_type}
+        })
+                .done(function (data) {
+                    var res = JSON.parse(data);
+                    if (res.cart_count == 0) {
+                        $('#list_div').find("#cart_div").remove();
+                        $('#list_div').append(`<div class="emptyCartContentWrap text-center" style="margin-top: 10px;">
+                                                <img src="${software_url+"assets/images/"}empty_cart.png" style="width:280px; height: 220px;"/>
+                                                <div class="continueShopping">
+                                                    <p style='margin-left: 35px;margin-bottom: 0px;'>Your Shopping Cart is empty</p>
+                                                    <h4 style='margin-top:0px;'><a href="${software_url+"courses"}" class="btn btn-default btnShp" style="margin-left: 30px;">Continue Shopping</a></h4>
+                                                </div> `);
+                        $('#div_pricing').addClass('dn');
+                        $('#list_div').removeClass('col-md-8 col-lg-8').addClass('col-md-12');
+                    } else {
+                        $('#cart_count').val(res.cart_count);
+                    }
+
+
+                    $('#cart_tb').html(res.cart_html);
+                    $('#total_mar').text(res.total_mar);
+                    $('#total').text(res.total);
+                    $('#you_save').text(res.you_save);
+                    $('#sitewide_discount').text(res.sitewide_discount);
+                    $('#total_ProductValue').text(res.total_ProductValue);
+                    if(res.cashback_amt == 0 || res.total == 0){
+						$('#cshbk_tr').addClass('dn');
+                        $('#cashback_amt').addClass('dn');
+                    }else{
+						$('#cshbk_tr').removeClass('dn');
+                        $('#cashback_amt').removeClass('dn');
+                    }
+                    $('#cashback_amt').text(res.cashback_amt);
+                    // $(curr_obj).closest('tr').remove();
+//                    $('#total').text(total);
+//                    $('#you_save').text(parseInt(total_mar) - parseInt(total));                    
+                    $('#loaderLayerfile').addClass('dn');
+                    update_headcart_list();
+                });
+    }
+}
+
+function apply_coup_cart(curr_obj) {
+    $(".coup_msg").html("");
+    $(".coup_msg").removeAttr("style");
+    if ($("#conf_coupon").val() === '')
+    {
+        $('.group input').addClass('errBdr');
+        $('.errBar').addClass('errField');
+        if($(curr_obj).attr('id') == "aplyCrtCode")
+        {
+            $('.divEmptyCode').show();
+            setTimeout(function () {
+                $('.divEmptyCode').fadeOut("slow", function () {
+                });
+            }, 4000);
+        }
+
+        return;
+    } else
+    {
+        $('.group input').removeClass('errBdr');
+        $('.errBar').removeClass('errField');
+    
+        $('#loaderLayerfile').removeClass('dn');
+        }
+    
+    $.ajax({
+        method: "POST",
+        url: software_url + "product/apply_coup_cart",
+        data: {coupon_name: $("#conf_coupon").val()}
+    })
+            .done(function (data) {
+                var res = JSON.parse(data);
+                $('#cart_tb').html(res.cart_html);
+                $('#cpnModal').html(res.cart_avail_cpn);
+                $('#total_mar').text(res.total_mar);
+                $('#total').text(res.total);
+                $('#you_save').text(res.you_save);
+        
+                if(res.cashback_amt == 0 || res.total == 0){
+					$('#cshbk_tr').addClass('dn');
+                    $('#cashback_amt').addClass('dn');
+                }else{
+					$('#cshbk_tr').removeClass('dn');
+                    $('#cashback_amt').removeClass('dn');
+                }
+        
+                $('#cashback_amt').text(res.cashback_amt);
+        
+                $('#cart_cpn_disc').addClass('dn');
+                //$('#cart_old_total').addClass('dn');
+                if(res.cart_discount_amt > 0){
+                    $('#cart_cpn_disc').removeClass('dn');
+                    $('#cart_old_total').removeClass('dn');
+                    $('#crt_old_total').html(res.old_cart_total);
+                    $('#combo_discount').html(res.total_save_combo);
+                    $('#crt_cpn_disct').html(res.cart_discount_amt.toFixed(2));
+                }
+                if (!res.cart_promote_view) {
+                    $('#cart_promote').html("");
+                } else {
+                    $('#cart_promote').html(res.cart_promote_view);
+                }
+                updateapplied_cpn_crt(res.applied_cpn, '', res.auto_cpn_arr);
+                updatePricesDivs(res.total);
+                $('#loaderLayerfile').addClass('dn');
+
+                if (res.cpn_msg == 'success') {
+                    $('#cpn_ack').text('Coupon applied successfully').removeClass('red').addClass('green');
+                    if (res.freecharge == 'Yes') {
+                        $('#freecharge_cpn_ack').text('7 days money back guarantee applicable on this coupon.').removeClass('red').addClass('green');
+                    }
+                    else if (res.freecharge_product == 'Yes') {
+                        $('#freecharge_cpn_ack').text('7 days money-back guarantee on this coupon. Cashback will be added to your wallet by freecharge.').removeClass('red').addClass('green');
+                    }
+                    else if (res.freecharge_product == 'No') {
+                        $('#freecharge_cpn_ack').text('').removeClass('red').addClass('green');
+                        $('#freecharge_cpn_ack').text('Freecharge Cashback Not Applicable with this coupon.').removeClass('red').addClass('green');
+                    } else {
+                        $('#freecharge_cpn_ack').text('').removeClass('red').addClass('green');
+                    }
+                } else if (res.cpn_msg == 'bestprice'){
+                    $('#cpn_ack').text('The best coupon is already applied for the courses listed').removeClass('green').addClass('red');     
+                } else if(res.cpn_msg == 'pleaselogin'){
+                    $('#cpn_ack').text('Please Log In/Sign Up to apply this Coupon').removeClass('green').addClass('red');
+                 } else {
+                    $('#cpn_ack').text('Lowest Offer Is Already Applied!').removeClass('green').addClass('red');
+                    //$('#cpn_ack').text('This coupon is not applicable for the courses listed').removeClass('green').addClass('red');
+                    $('.cartcpn_msg').html('');
+                }
+                
+                if(res.total_save_combo <= 0){
+                    $('#combo_discount_div').addClass('dn');
+                }else{
+                    $('#cart_old_total').removeClass('dn');
+                    $('#crt_old_total').html(res.old_cart_total);
+                    $('#combo_discount').text(res.total_save_combo);
+                }
+
+                $('#cpn_ack').fadeIn(500);
+                setTimeout(function () {
+                    $('#cpn_ack').fadeOut("slow", function () {
+                    });
+                }, 4000);
+                setTimeout(function () {
+                    $('.cartcpn_msg').fadeOut("slow", function () {
+                    });
+                }, 10000);
+                update_headcart_list();
+
+                update_wintersale_gifts(res.winterSaleFlag);
+
+//                loading_stop($(curr_obj), '');
+            });
+
+
+}
+
+function remove_coup_cart(curr_obj, cid, module, mar, price, via, cpn_id, auto_cpn) {
+    if (cid != '') {
+        loading($(curr_obj), '');
+        //   var total_mar = $('#total_mar').text();
+        //  var total = $('#total').text();
+        //  var act_total = parseInt(total) - parseInt(price);
+        $('#loaderLayerfile').removeClass('dn');
+        $.ajax({
+            method: "POST",
+            url: software_url + "product/remove_coup_cart",
+            data: {cid: cid, module: module, via: via, cpn_id: cpn_id, auto_cpn: auto_cpn}
+        })
+                .done(function (data) {
+                    var res = JSON.parse(data);
+                    // console.log(res);
+                    //$('#total_mar').text(res.total_mar);
+//                    var total = parseInt(act_total) + parseInt(res.price);
+                    //alert(res.total_mar);  
+                    if (res.freecharge == 'No') {
+                        $('#freecharge_cpn_ack').text('').removeClass('red').addClass('green');
+                    }
+                    var cnt_tr_shw = 0; var cnt_tr_all = 0;
+                    var final_cart_html = ''; var cpn_li = '';
+                    if(!$('.shw_all_cpn').hasClass('dn')){
+                        var cli_id = $('.shw_cpn_li:not(.dn)').attr('id');
+                        cpn_li = cli_id.split('_')[1];
+                        var ccart_html = res.cart_html;
+                        var applied_cpn = res.applied_cpn;
+                        $(ccart_html).closest('.shw_cpn_tr').each(function(i,v) {
+                            cnt_tr_all++;
+                            if(!$(v).hasClass('cpn_' + cpn_li)){
+                                $(v).addClass('dn');
+                                cnt_tr_shw ++;
+                            }
+                            final_cart_html += $(this)[0].outerHTML;
+                        });
+                    }
+                    if(cnt_tr_all == cnt_tr_shw){
+                       final_cart_html = res.cart_html;
+                       cpn_li = '';
+                    }
+                    $('#cart_tb').html(final_cart_html);
+                    $('#cpnModal').html(res.cart_avail_cpn);
+                    $('#total_mar').text(res.total_mar);
+                    $('#total').text(res.total);
+                    $('#you_save').text(res.you_save);
+                    
+                    if(res.cashback_amt == 0 || res.total == 0){
+						$('#cshbk_tr').addClass('dn');
+                        $('#cashback_amt').addClass('dn');
+                    }else{
+						$('#cshbk_tr').removeClass('dn');
+                        $('#cashback_amt').removeClass('dn');
+                    }
+                    $('#cashback_amt').text(res.cashback_amt);
+                    $('#cart_cpn_disc').addClass('dn');
+                    $('#cart_old_total').addClass('dn');
+                    if(res.cart_discount_amt > 0){
+                        $('#cart_cpn_disc').removeClass('dn');
+                        $('#cart_old_total').removeClass('dn');
+                        $('#crt_old_total').html(res.old_cart_total);
+                        $('#crt_cpn_disct').html(res.cart_discount_amt);
+                    }
+                    if (!res.cart_promote_view) {
+                        $('#cart_promote').html("");
+                    } else {
+                        $('#cart_promote').html(res.cart_promote_view);
+                    }
+                    if(res.total_save_combo <= 0){
+                        $('#combo_discount_div').addClass('dn');
+                    }else{
+                        $('#cart_old_total').removeClass('dn');
+                        $('#crt_old_total').html(res.old_cart_total);
+                        $('#combo_discount').text(res.total_save_combo);
+                    }
+                    updateapplied_cpn_crt(res.applied_cpn, cpn_li, res.auto_cpn_arr);
+                    updatePricesDivs(res.total);
+                    update_wintersale_gifts(res.winterSaleFlag);
+//                    $('#total').text(total);
+//                    $('#you_save').text(parseInt(total_mar) - parseInt(total));                    
+                    $('#loaderLayerfile').addClass('dn');
+                    update_headcart_list();
+                });
+    }
+}
+
+function apply_coup_cart_popup(obj){
+    var cpnradio = $('input[name=cpnradio]:checked').attr('itemref');
+    var c_id = cpnradio/*.split('_')[1]*/;
+    $("#conf_coupon").val(c_id);
+    loading($(".cpnPopBtn"), '');
+    apply_coup_cart(obj);
+    loading_stop($(".cpnPopBtn"), '');
+    $('#cpnModal').modal('hide');
+}
+
+//function remove4mSL(curr_obj, cid, module) {
+//    if (cid != '') {
+//        var curr_click = ++clicks;
+//        $(curr_obj).closest('tr').remove();
+//        var SL_count = $('#SL_div table tr').length;
+//        if (SL_count <= 0) {
+//            $('#SL_div table tbody').html("<tr class='tr_emty'><td>No Items are added for Later</td></tr>");
+//        }
+//        $('#loaderLayerfile').removeClass('dn');
+//        $.ajax({
+//            method: "POST",
+//            url: software_url + "product/remove4mSL",
+//            data: {cid: cid, module: module}
+//        })
+//                .done(function (data) {
+//
+//                    update_panels(curr_click);
+//                    //$('#loaderLayerfile').addClass('dn');
+//                    // console.log(data);
+////                    var cart_cnt = data.trim();
+////                    if (cart_cnt == 0) {
+////                        //  $('#SL_div').html("<tr class='tr_emty'><td>No Items are added for Later</td></tr>");
+////                    } else {
+////                        //  $('#cart_count').val(cart_cnt);
+////                    }
+//                    //  $('#loaderLayerfile').addClass('dn');
+//                    // $('.cart_dis').text(data);                                
+//                });
+//
+//
+//    }
+//}
+
+//function SL_to_AC(curr_obj, cid, cpid, module, mar, price) {
+//    if (cid != '') {
+//        var curr_click = ++clicks;
+//        $('#loaderLayerfile').removeClass('dn');
+//        // var cart_cnt = $('.cart_dis').text();
+//        cart_count = parseInt(cart_count) + 1;
+//        $(curr_obj).closest('tr').remove();
+//        var total_mar = $('#total_mar').text().trim() == "" ? 0 : $('#total_mar').text().trim();
+//        var total = $('#total').text().trim() == "" ? 0 : $('#total').text().trim();
+//
+//        var new_total_mar = parseInt(total_mar) + parseInt(mar);
+//        var new_total = parseInt(total) + parseInt(price);
+//
+//        var html = "<tr>" + $(curr_obj).closest('tr').html() + "</tr>";
+//        var $tr = $('<div />', {html: html});
+//        $tr.find('.C_rem').replaceWith("<a class='C_rem' onclick=\"remove4mCart(this, '" + cid + "','" + module + "','" + mar + "', '" + price + "','" + cpid + "' ,'CR')\">Remove</a>");
+//        $tr.find('.C_action').replaceWith("<a class='C_action' onclick=\"remove4mCart(this, '" + cid + "', '" + module + "','" + mar + "', '" + price + "','" + cpid + "' ,'SL')\" > Save for Later </a>");
+//        $($tr.html()).prependTo($("#cart_div table > tbody"));
+//        $("#cart_div table > tbody .tr_emty").remove();
+//
+//        $('#total_mar').text(new_total_mar);
+//        $('#total').text(new_total);
+//        $('#you_save').text(parseInt(new_total_mar) + parseInt(new_total));
+//        $('.cart_dis').text(cart_count);
+//        $('#cart_item').text(cart_count);
+//
+//        if (cart_count > 0) {
+//            $('#list_div').removeClass('col-md-12').addClass('col-md-8');
+//            $('#div_pricing').removeClass('dn');
+//        }
+//
+//        var SL_count = $('#SL_div table tr').length;
+//        if (SL_count <= 0) {
+//            $('#SL_div table tbody').html("<tr class='tr_emty'><td>No Items are added for Later</td></tr>");
+//        }
+//
+//
+//
+//        //   $('#loaderLayerfile').removeClass('dn');
+//        $.ajax({
+//            method: "POST",
+//            url: software_url + "product/addtocart",
+//            data: {cid: cid, cpid: cpid, module: module, add_type: 'SL_to_AC'}
+//        })
+//                .done(function (data) {
+//                    update_panels(curr_click);
+//                    //$('#loaderLayerfile').addClass('dn');
+//                    // console.log(data);
+////                    var cart_cnt = data.trim();
+////                    if (cart_cnt == 0) {
+//                    //  $('#SL_div').html("<tr class='tr_emty'><td>No Items are added for Later</td></tr>");
+////                    } else {
+////                        //  $('#cart_count').val(cart_cnt);
+////                    }
+//                    //  $('#loaderLayerfile').addClass('dn');
+//                    // $('.cart_dis').text(data);                                
+//                });
+//    }
+//}
+
+function catchEnter(event) {
+    if (event.keyCode === 13) {
+        $("#aplyCrtCode").click();
+        $(".btn-cpnApply").click();
+        $(".redeemDivApplyBtn").click();
+        //$('.loginBtn').click()
+        //$('.signBtn').click()
+    }
+}
+
+
+function set_sale_old(obj, sale_amt, page) {
+    $(obj).find('.loader').removeClass('dn');
+    $.ajax({
+        method: "POST",
+        url: software_url + "product/set_sale",
+        data: {sale_amt: sale_amt}
+    }).done(function (d) {
+        if (page == 'home') {
+            window.location.href = software_url + 'courses';
+        } else {
+            location.reload();
+        }
+    })
+}
+
+function set_sale(obj, sale_amt, page, country) {
+   if( country == "India")
+   {
+     $('#sale369_all').attr('src', software_url + 'assets/images/est_all_chk.png');
+    //$('#sale369_3').attr('src', software_url + 'assets/images/chris_3.png');
+    $('#sale369_6').attr('src', software_url + 'assets/images/est_6_chk_ind.png');
+    $('#sale369_9').attr('src', software_url + 'assets/images/est_9_chk_ind.png');
+    $(obj).closest('.posrel').find('.loader').removeClass('dn');
+    if (sale_amt == 3) {
+        $(obj).attr('src', software_url + 'assets/images/chris_3_chk_ind.png');
+    } else if (sale_amt == 6)
+    {
+        $(obj).attr('src', software_url + 'assets/images/est_6_ind.png');
+    } else if (sale_amt == 9)
+    {
+        $(obj).attr('src', software_url + 'assets/images/est_9_ind.png');
+    } else
+    {
+        $(obj).attr('src', software_url + 'assets/images/est_all.png');
+    }
+   }
+   else{
+   
+    $('#sale369_all').attr('src', software_url + 'assets/images/est_all_chk.png');
+    //$('#sale369_3').attr('src', software_url + 'assets/images/chris_3.png');
+    $('#sale369_6').attr('src', software_url + 'assets/images/est_6_chk.png');
+    $('#sale369_9').attr('src', software_url + 'assets/images/est_9_chk.png');
+    $(obj).closest('.posrel').find('.loader').removeClass('dn');
+    if (sale_amt == 3) {
+        $(obj).attr('src', software_url + 'assets/images/chris_3_chk.png');
+    } else if (sale_amt == 6)
+    {
+        $(obj).attr('src', software_url + 'assets/images/est_6.png');
+    } else if (sale_amt == 9)
+    {
+        $(obj).attr('src', software_url + 'assets/images/est_9.png');
+    } else
+    {
+        $(obj).attr('src', software_url + 'assets/images/est_all.png');
+    }
+}
+    $.ajax({
+        method: "POST",
+        url: software_url + "product/set_sale",
+        data: {sale_amt: sale_amt}
+    }).done(function (d) {
+        window.location.href = window.location.pathname + "?sale=" + sale_amt;
+    })
+
+}
+
+function pres_extra(obj, id, price, module) {
+    var method = $(obj).text().trim();
+    var ids = $('#ids').val().trim();
+    //alert(method);
+    var pro = module + '-' + id;
+    var dis_price = $('.price_value').text().trim();
+    if (method == 'Add') {
+        if (ids.indexOf(pro) != -1) {
+            //aleady exists;
+        } else {
+            if (ids == '') {
+                ids = ids + pro;
+            } else {
+                ids = ids + ',' + pro;
+            }
+            $('.price_value').text(parseInt(dis_price) + parseInt(price));
+            $('#ids').val(ids);
+            $(obj).text('Remove').addClass('rustcolor');
+        }
+    } else if (method == 'Remove') {
+        if (ids.indexOf(pro) != -1) {
+            ids = ids.replace("," + pro, '');
+            ids = ids.replace(pro, '');
+            $('.price_value').text(parseInt(dis_price) - parseInt(price));
+        }
+        $('#ids').val(ids);
+        $(obj).text('Add').removeClass('rustcolor');
+    }
+
+//    $.ajax({
+//        type: "POST",
+//        data: {product_id: id, module: module, type: type},
+//        url: software_url + 'preorder/pres_extra',
+//        success: function (data) {
+//            alert(data);
+//            //$('#div_prerequisites').html(data);
+//        }
+//    });
+}
+
+
+// <Product pages>
+
+// Aync functions for loading related courses
+function loadPageData_relPro(product_id, cat_id) {
+    $.ajax({
+        type: "POST",
+        data: {product_id: product_id, cat_id: cat_id},
+        url: software_url + 'product/getRelatedCourses',
+        success: function (data) {
+            $('#relatedCourses').attr("data-state", "loaded").html(data);
+            $('#relatedCourses').slick({
+                infinite: false,
+                speed: 500,
+                arrows: true,
+                slidesToShow: 5,
+                slidesToScroll: 5,
+                nextArrow: '<i class="fa fa-angle-right RgtArrow"></i>',
+                prevArrow: '<i class="fa fa-angle-left LftArrow"></i>',
+                variableWidth: true,
+                responsive: [
+                {
+                  breakpoint: 1025,
+                  settings: {dots: false,arrows: false,infinite: false,slidesToShow: 3,slidesToScroll: 1}
+                },
+                {
+                  breakpoint: 769,
+                  settings: {dots: false,arrows: false,infinite: false,slidesToShow: 2,slidesToScroll: 1}
+                },
+                {
+                  breakpoint: 601,
+                  settings: {dots: false,arrows: false,infinite: false,slidesToShow: 1,slidesToScroll: 1}
+                }
+                ]
+            });
+        }
+    });
+}
+
+// Aync functions for loading course syllabus
+function loadPageData_curr(product_id) {
+    $.ajax({
+        type: "POST",
+        data: {product_id: product_id},
+        url: software_url + 'product/getProductSyllabus',
+        success: function (data) {
+            $('#courseContentBody').attr("data-state", "loaded").html(data);
+        }
+    });
+}
+
+// Aync functions for loading course prerequisites
+function loadPageData_preReq(product_id) {
+    $.ajax({
+        type: "POST",
+        data: {product_id: product_id},
+        url: software_url + 'product/getPrerequisists',
+        success: function (data) {
+            data = JSON.parse(data);
+            html = (data.prerequisites) ? data.prerequisites : "Prerequisites are not available for this course.";
+            $('#prerequisitesBody').attr("data-state", "loaded").html(html);
+            if(data.skillsYouWillGain){
+                $('#skillsYouWillGain').attr("data-state", "loaded").html("<p><b>SKILLS YOU WILL GAIN</b></p>").append(data.skillsYouWillGain);
+            }
+            else{
+                $('#skillsYouWillGain').remove();
+            }
+            if(data.whatYouWillLearn){
+                $('#whatYouWillLearn').attr("data-state", "loaded").html("<p><b>WHAT YOU WILL LEARN</b></p>").append(data.whatYouWillLearn);
+            }
+            else{
+                $('#whatYouWillLearn').remove();
+            }
+        }
+    });
+}
+
+// Aync functions for loading course reviews
+function loadPageData_review(uri, onload=false) {
+    obj = $('#reviewBody');
+    page = onload ? 0 : $(obj).attr('data-next-page');
+    if($(obj).attr('data-fetching') == 0 && page != "false"){
+        $(obj).attr('data-fetching', 1);
+        showLoaderInDiv($(obj).find('.btn-ViewMore'));
+        $.ajax({
+            type: "POST",
+            url: software_url + 'product/review/'+uri+'/'+page,
+            success: function (data) {
+                data = JSON.parse(data);
+                $(obj).attr("data-state", "loaded");
+                if(page == 0){
+                    if(data.reviewsCount == 0){
+                        $('.rewHead').remove();
+                        $(obj).find('.rewList').html("No reviews for this course");
+                    }
+                    else{
+                        $(obj).find('.rewList').html(data.html);
+                    }
+                }
+                else{
+                    $(obj).find('.rewList').append(data.html);
+                }
+                viewMoreSimpleExpand('#reviewBody');
+                if(data.reviewsCount < 5){
+                    $(obj).attr('data-next-page', "false");
+                    $(obj).find('.btn-ViewMore').addClass('dn');
+                }
+                else{
+                    $(obj).attr('data-next-page', parseInt(page) + 1);
+                    $(obj).find('.btn-ViewMore').removeClass('dn');
+                }
+                $(obj).attr('data-fetching', 0);
+                $(obj).find('.btn-ViewMore').html('View More Reviews');
+            }
+        });
+    };
+}
+
+function loadPageData_insStats(productId){
+    $.ajax({
+        type: "POST",
+        url: software_url + 'instructor/getInstructorStats',
+        data: {inst_api: 1, instructor_id: "", productId: productId},
+        dataType: 'json',
+        success: function (data) {
+            data.map((instructorStats) => {
+                // $('#studentsCount'+instructorStats.instructorId).html(instructorStats.studentsCount);
+                $('#coursesCount'+instructorStats.instructorId).html(instructorStats.coursesCount)
+            });
+        }
+    });
+}
+
+function showLoaderInDiv(obj){
+    $(obj).html('<div class="loaderUtility"></div>');
+}
+
+//Social Media Buttons
+function shareOnFacebook(url){
+    href = "https://www.facebook.com/sharer/sharer.php";
+    link = href+'?u='+encodeURIComponent(url);
+    window.open(link,'facebook-share-dialog','width=626,height=436');
+}
+function shareOnTwitter(url, module, name){
+    href = "https://twitter.com/intent/tweet";
+    params = $.param({
+        text: "Check out this "+module+" on \""+name+"\"",
+        url: url,
+        via: "Tutor_Eduonix"
+    });
+    link = href+"?"+params;
+    window.open(link,'twitter-share-dialog','width=626,height=436');
+}
+function shareOnLinkedin(url){
+    href = "https://www.linkedin.com/cws/share/";
+    link = href+'?url='+encodeURIComponent(url);
+    window.open(link,'linkedin-share-dialog','width=626,height=436');
+}
+
+
+// Function is used to set View more toggles on any div
+// Requirements:    .simpleViewMore class as parent of the description
+//                  .viewMoreDescription class on the description (Also give max height)
+// Output:          .viewMoreGradient class as the sibling to the description
+function viewMoreSimpleExpand(domElement="body"){
+    $(domElement).find('.simpleViewMore').each((index, element)=>{
+        descriptionObj = $(element).find('.viewMoreDescription');
+        if($(element).find('.viewMoreGradient').length == 0){
+            if($(descriptionObj).css('height') < $(descriptionObj).css('max-height')){}
+            else{
+                $(element).append(`<div class="viewMoreGradient">+ View More</div>`);
+            }
+            setClickOnViewMoreGradient(element);
+        }
+    });
+}
+
+function setClickOnViewMoreGradient(element="body"){
+    $(element).find('.viewMoreGradient').on('click', function(){
+        var html = $(this).html();
+        if(html === "+ View More")
+        {
+           $(this).siblings(".viewMoreDescription").addClass("heightClass");
+            $(this).html("- View Less");
+            $(this).addClass("bgNone");
+        }
+        if(html === "- View Less")
+        {
+           $(this).siblings(".viewMoreDescription").removeClass("heightClass");
+            $(this).html("+ View More");
+            $(this).removeClass("bgNone");
+            $('html, body').animate({
+                scrollTop: $(this).parent(".simpleViewMore").offset().top
+              }, 100);
+        }
+        
+    });
+}
+
+function viewMoreSimpleToggle(obj){
+    parent = $(obj).parents('.MainSyllabus');
+    state = $(obj).attr('data-state');
+    if(state == 'collapsed'){
+        $(parent).find('.card').removeClass('dn');
+        $(obj).attr('data-state', 'expanded').find('.sectionHeader b').html('- View Less');
+    }
+    else if(state == 'expanded'){
+        $(parent).find('.card:nth-of-type(1n+11):not(.viewMoreCard)').addClass('dn');
+        $(obj).attr('data-state', 'collapsed').find('.sectionHeader b').html('+ View More');
+    }
+}
+// </ProductPages>
+
+
+
+function stickyFooterHeaderUnable(){
+ $(document).scroll(function() {
+     if($(window).outerWidth() < 479){
+// For sticky Header and Footer
+        var stickyHeadTop = $(".navBarDesktop").offset().top;
+        var stickyHeadTopMob =  $(".stickyPricing").offset().top + $(".stickyPricing ").height();
+
+        //stickyPricing is a common class just apply in the element comes before the last element
+            if($(window).scrollTop()>=stickyHeadTop && stickyHeadTop != 0){
+                $(".stickyNavBarMob").removeClass("dn");
+                $(".navBarDesktop").addClass("dn");
+                $(".stickyPriceBar").removeClass("dn");
+                }
+
+            else if($(window).scrollTop()<stickyHeadTopMob && stickyHeadTop == 0){
+                $(".stickyNavBarMob").addClass("dn");
+                $(".navBarDesktop").removeClass("dn");
+                $(".stickyPriceBar").addClass("dn");
+                }
+        }
+    });
+}
+// thumbnail hover effect start
+$(document).ready(function(){
+    
+    //  Nav bar with left and right arrows
+    var totalpolliWidth = 0;
+    $('ul.popularNavMain li').each(function(index) {
+        totalpolliWidth += parseInt($(this).width(), 10);
+    });
+    if(totalpolliWidth < $("ul.popularNavMain").width()){
+        // $("ul.popularNavMain").attr('style', 'display: flex!important');
+        $("ul.popularNavMain").addClass('nav-justified');
+        $(".popularNavWrap").siblings('.scroller').hide();
+    }
+    $('.scroller-left').on('click', function() {
+        $('.popularNavMain').animate({
+        scrollLeft: '-=200'
+        }, 300, 'swing');
+    });
+    $('.scroller-right').on('click', function() {
+        $('.popularNavMain').animate({
+        scrollLeft: '+=200'
+        }, 300, 'swing');
+    });
+    // Nav bar with left and right arrows
+
+
+
+// thumbnail hover effect Starts
+    $(document).on("mouseover",".item.ldcnt",function(){
+      if($(window).outerWidth() >992){
+                tippy(this,{
+                  onShow() {
+                        $(".tippy-popper").css({
+                            "visibility" : "hidden"
+                        })
+                    },
+                    target: '.divThumb',
+                    content: $(this).find(".right").html(),
+                    allowHTML: true,
+                    delay: 300,
+                    interactive: true,
+                    animateFill: false,
+                    placement: "left",
+                    flip: true,
+                    flipOnUpdate: true,
+                    boundary: 'viewport',
+                    popperOptions: {
+                    modifiers: {
+                      flip: {
+                        boundariesElement: 'scrollParent',
+                        behavior: ['left', 'right', 'top','bottom'],
+                          },
+                         },
+                        },
+                    
+                    theme: "transparent",
+                    arrow: true,
+                 })
+            }
+    });
+
+    // console.log(tippy('.item.ldcnt'));
+
+
+   stickyFooterHeaderUnable();
+
+});
+// thumbnail hover effect End
+
+async function submitCodeBlueForm(){
+    readyToSubmit = true;
+    parent = $('#codeBlueModal .codeBlueContent');
+    input = {};
+    $(parent).find('input').each((index, element)=>{
+        input[$(element).attr('id')] = $(element).val();
+    });
+    errorMsg= '';
+    readyToSubmit = await checkFields(input)
+    .then(()=>{
+        if(checkEmail(input.codeblueEmail)) return true;
+        else{
+            errorMsg = "Please enter a valid email";
+            return false;
+        }
+    })
+    .catch(()=>{
+        errorMsg = "Please fill all the mandatory fields";
+        return false;
+    });
+    if(readyToSubmit){
+        $(parent).find('.codeblueErrorMsg').html("");
+        data = {};
+        $(parent).find('input').each((index, element)=>{
+            data[$(element).attr('name')] = $(element).val();
+        });
+        showLoaderInDiv($(parent).siblings('.btn-codeblue'));
+        $.ajax({
+            method: "POST",
+            url: software_url + "home/saveCodeBlueForm",
+            data: data,
+            success: (data) => {
+                $(parent).siblings('.btn-codeblue').remove();
+                data = JSON.parse(data);
+
+                if(data.status) {
+                    $(parent).html(`
+                        <div class="codeBlueAck">
+                            <i class="fas fa-check-circle"></i>
+                            Submitted Successfully<br>
+                            We will get in touch with you shortly.
+                        </div>
+                    `);
+                }else{
+                    $(parent).html(`
+                        <div class="codeBlueAck">
+                            <i class="fas fa-exclamation-circle"></i>
+                            Please try after some time.
+                        </div>
+                    `);
+                }
+            }
+        });
+    }
+    else{
+        $(parent).find('.codeblueErrorMsg').html(errorMsg);
+    }
+}
+
+function checkFields(inputs){
+    return new Promise(function(resolve, reject){
+        passedCheck = true;
+        mandatoryFields = ['codeblueFullName', 'codeblueEmail', 'codeblueOrganization'];
+        mandatoryFields.forEach((input, key)=>{
+            if(inputs[input] == ''){
+                passedCheck = false;
+            }
+        });
+        if(passedCheck) resolve();
+        else reject();
+    });
+}
+
+function submit_vote(obj){
+    $('.vote_err_msg').html();
+    var vote_cntry = $('input[name="votmatch"]:checked').attr('id');
+    var t_id = $('#vottra_id').val();
+    var match_id = $('#votmat_id').val();
+    if (typeof vote_cntry === "undefined"){
+        $('.vote_err_msg').html('Please provide some input to participate.').css('color','red');
+    }else{
+        loading($(obj), '');
+        $.ajax({
+            type: "POST",
+            url: software_url + 'dashboard/submit_vote',
+            data: {vote_cntry: vote_cntry, t_id: t_id, match_id: match_id},
+            dataType: 'json',
+            success: function (data) {
+                if(data == '1'){
+                    $('.vote_err_msg').html("Thank You for Participating in Predict & Win Cricket World Cup Contest!").css({'color':'green',"font-size":"14px","font-weight":"bolder"});
+                }else{
+                    $('.vote_err_msg').html("Invalid access").css('color','red');
+                }
+                $('.votmat_chng1').attr('href', software_url + 'dashboard');
+                $('.votmat_chng2').attr('href', software_url + 'courses');
+                $('.votmat_chng1').removeAttr('onclick');
+                $('.votmat_chng2').removeAttr('onclick');
+                setTimeout(function () {
+                    $('.vote_err_msg').fadeOut("slow", function () {
+                    });
+                    $('.voting_panel').remove();
+                }, 5000);
+                
+                loading_stop($(obj), '');
+            }
+        });
+    }
+}
+
+function skip_voting(obj){
+    var link = $(obj).attr('itemid');
+    window.location.href = software_url + link;
+}
+
+function check_to_exit_voting(obj){
+    var link = $(obj).attr('itemid');
+    $('#content_type').val('voting');
+    var popup_txt = "Are You Sure You Don’t Want To Participate in Predict & Win CWC Contest?";
+    del_obj = obj;
+    $('#popup_txt').text(popup_txt);
+    $('#cus-myModal').removeClass('dn');
+}
+
+function shw_cart_cpn_msg(obj){
+    if($(obj).hasClass('cpnInactive')){
+        $(obj).next('tr').find('span.shw_cart_cpn_alert').html($(obj).attr('title'));
+        $(obj).next('tr').find('span.shw_cart_cpn_alert').fadeIn('slow');
+        setTimeout(function () {
+            $(obj).next('tr').find('span.shw_cart_cpn_alert').fadeOut("slow", function () {
+            });
+        }, 5000);
+    }
+}
+
+function shw_cart_cpnip_msg(obj){
+    if($(obj).is('[disabled=disabled]')){
+        shw_cart_cpn_msg($(obj).closest('tr.cpnInactive'));
+    }
+}
+
+
+function chk_avail_cpn(obj){
+    if($(obj).hasClass('crsPointer')){
+        $(obj).find('input[name="cpnradio"]').prop("checked", true);
+    }
+}
+function update_wintersale_gifts(winterSaleFlag){
+    if(winterSaleFlag >= 1){
+        $(".bigwinSale ul>li span[data-gift-id='1']").removeClass().addClass('imgConActive');
+        $(".bigwinSale ul>li span[data-gift-id='1'] span[data-gift-id='1']").removeClass().addClass('bwnumActive');
+    } else {
+        $(".bigwinSale ul>li span[data-gift-id='1']").removeClass().addClass('imgConinActive');
+        $(".bigwinSale ul>li span[data-gift-id='1'] span[data-gift-id='1']").removeClass().addClass('bwnuminActive');
+    }
+    if(winterSaleFlag >= 2){
+        $(".bigwinSale ul>li span[data-gift-id='2']").removeClass().addClass('imgConActive');
+        $(".bigwinSale ul>li span[data-gift-id='2'] span[data-gift-id='2']").removeClass().addClass('bwnumActive');
+    } else {
+        $(".bigwinSale ul>li span[data-gift-id='2']").removeClass().addClass('imgConinActive');
+        $(".bigwinSale ul>li span[data-gift-id='2'] span[data-gift-id='2']").removeClass().addClass('bwnuminActive');
+    }
+    if(winterSaleFlag >= 3){
+        $(".bigwinSale ul>li span[data-gift-id='3']").removeClass().addClass('imgConActive');
+        $(".bigwinSale ul>li span[data-gift-id='3'] span[data-gift-id='3']").removeClass().addClass('bwnumActive');
+    } else {
+        $(".bigwinSale ul>li span[data-gift-id='3']").removeClass().addClass('imgConinActive');
+        $(".bigwinSale ul>li span[data-gift-id='3'] span[data-gift-id='3']").removeClass().addClass('bwnuminActive');
+    }
+}
+
+function htmlspecialchars(str) {
+    if (typeof(str) == "string") {
+     str = str.replace(/&/g, "&amp;"); /* must do &amp; first */
+     str = str.replace(/"/g, "&quot;");
+     str = str.replace(/'/g, "&#039;");
+     str = str.replace(/</g, "&lt;");
+     str = str.replace(/>/g, "&gt;");
+     }
+    return str;
+    }
+
+//--------------------------------------------------------------------------
+// Common Functions
+// 
+// This is a safe heaven for common functions
+// Add your common functions over here with two or three lines of what it does
+// 
+// Helper js functions can go here too... No discrimination
+// 
+// However other specific functions are not allowed
+//--------------------------------------------------------------------------
+
+// Use this function to display an acknowledgement inside an empty div
+// just create an empty display none div and the rest is handled by this function
+function displayAcknowledgement(reviewId, flag, html){
+    obj = $(reviewId);
+    if(flag == "success"){
+        classes = "alert alert-success";
+    } else if(flag == "error"){
+        classes = "alert alert-danger";
+    } else if(flag == "warning"){
+        classes = "alert alert-warning";
+    } else if(flag == "warning"){
+        classes = "alert alert-info";
+    }
+    $(obj).addClass(classes);
+    $(obj).attr('role', 'alert').html(html);
+    $(obj).fadeIn(300);
+    setTimeout(function () {
+        $(obj).fadeOut(500, () => {
+            $(obj).removeClass(classes);
+        });
+    }, 2000);
+}
+
+//Common js function to build a quick editor (Classic Editor)
+// just pass a css selector as argument
+initializeCommonEditor = (selector) => {
+    return new Promise( (resolve, reject) => {
+        return ClassicEditor.create( document.querySelector(selector), {
+            toolbar: [ '|', 'bold','italic', 'link', 'bulletedList'],
+            typing: {
+                transformations: {
+                    include: ['quotes','typography','symbols'],
+                }
+            },
+            link: {
+                decorators: {
+                    addTargetToExternalLinks: {
+                        mode: 'automatic',
+                        callback: url => /^(https?:)?\/\//.test( url ),
+                        attributes: {
+                            target: '_blank',
+                            rel: 'noopener noreferrer'
+                        }
+                    }
+                }
+            }
+        } )
+        .then( (editor) => {
+            resolve(editor);
+        } )
+        .catch( (error) => {
+            console.error(error);
+        } );
+    })
+}
+
+function getUtcTimeStamp(){
+    return (new Date()).getTime();
+}
+
+function getUtcTimeString(){
+    var date  = new Date();
+    var string = date.getUTCFullYear() + '-' + 
+                ('0' + date.getUTCMonth()).slice(-2) + '-' + 
+                ('0' + date.getUTCDate()).slice(-2) + ' ' + 
+                ('0' + date.getUTCHours()).slice(-2) + ':' + 
+                ('0' + date.getUTCMinutes()).slice(-2) + ':' + 
+                ('0' + date.getUTCSeconds()).slice(-2);
+    return string;
+}
+
+function escapeString(text){
+    temp = document.createElement('div');
+    temp.textContent = text;
+    return temp.innerHTML;
+}
+
+function unescapeString(string){
+    return $('<textarea />').html(string).text();
+}
+
+
+//--------------------------------------------------------------------------
+// Common Functions, go no further
+//--------------------------------------------------------------------------
